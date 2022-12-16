@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dinosaurio</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <nav class="flex navbar">
+            <div id="colors" class="grid-colores"></div>
+
+            <div class="tools" ></div>
+            <button onclick="deleteAndRestore()" class="button-18"> Undo</button>
+             <button onclick="restore()" class="button-18"> Redo </button>
+        </nav>
+    </header>
+    <div class="center">
+        <canvas id="myCanvas"></canvas>
+    </div>
+    <script src="main.js"></script>
+</body>
+</html>
