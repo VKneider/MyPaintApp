@@ -60,9 +60,17 @@ function draw(e){
 }
 
 
+CANVAS.addEventListener('touchstart', startPath)
+
 CANVAS.addEventListener('mousedown', startPath)
 
 CANVAS.addEventListener('mousemove', e=>{
+    if(!DRAWING) return;
+    draw(e)
+    
+})
+
+CANVAS.addEventListener('touchmove', e=>{
     if(!DRAWING) return;
     draw(e)
     
@@ -75,7 +83,24 @@ CANVAS.addEventListener('mouseup', e=>{
     AUX=[]
 })
 
+CANVAS.addEventListener('touchend', e=>{
+    DRAWING=false;
+    COMMANDS.push(AUX)
+    LAST=AUX;
+    AUX=[]
+})
+
+
 CANVAS.addEventListener('mouseleave', ()=>{ DRAWING=false;})
+
+
+
+
+
+
+
+
+
 
 document.addEventListener('DOMContentLoaded', init)
 
