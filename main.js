@@ -1,32 +1,21 @@
+//Main Canvas
 let CANVAS = document.getElementById("myCanvas")
 let CTX = CANVAS.getContext("2d")
-let colorsContainer = document.getElementById("colors")
-let colors = ["white","black","gray","blue","red","yellow","green","purple","orange","pink","aqua", "cyan"];
-let COLOR_CIRCLES = document.getElementsByClassName("circle")
-
-
-CTX.lineCap="round";
-CTX.lineJoin="round";
-
-let backup = document.createElement("canvas")
-
 let DRAWING=false;
 
+//Color Variables
+let colorsContainer = document.getElementById("colors")
+let COLOR_CIRCLES = document.getElementsByClassName("circle")
+let colors = ["white","black","gray","blue","red","yellow","green","purple","orange","pink","aqua", "cyan"];
+
+
+//COMMAND REGISTRY
 let COMMANDS = [];
 let AUX = [];
 let LAST;
 
-function pushAndExecute(){
 
-AUX.push(arguments)
-execute.apply(null, arguments)
-return;
-}
-
-function saveCommand(){ COMMANDS.push(arguments)}
-
-
-
+//Function executed on DOMContentLoaded
 function init(){
 
     CANVAS.width = window.innerWidth - 2;
@@ -42,9 +31,7 @@ function init(){
         color.style.background=colors[i]
         colors.id=colors[i];
         colorsContainer.appendChild(color)
-    }
-    
-    
+    } 
 }
 
 
@@ -60,15 +47,14 @@ function startPath(e){
     AUX.push({x:e.offsetX,y: e.offsetY,width: CTX.lineWidth/2,from:0,to:Math.PI*2, fillStyle:CTX.fillStyle})
     
 }
+
 function draw(e){
    
     if(!DRAWING) return;
-
     CTX.lineCap="round";
     CTX.lineJoin="round";
     CTX.lineTo(e.offsetX, e.offsetY)
     CTX.stroke()
-
     AUX.push({x:e.offsetX, y:e.offsetY, width:CTX.lineWidth, strokeStyle:CTX.strokeStyle})
 
 }
@@ -82,7 +68,6 @@ CANVAS.addEventListener('mousemove', e=>{
     
 })
 
-
 CANVAS.addEventListener('mouseup', e=>{
     DRAWING=false;
     COMMANDS.push(AUX)
@@ -90,13 +75,11 @@ CANVAS.addEventListener('mouseup', e=>{
     AUX=[]
 })
 
+CANVAS.addEventListener('mouseleave', ()=>{ DRAWING=false;})
 
 document.addEventListener('DOMContentLoaded', init)
 
 document.addEventListener('keydown', e=>{
-
-    
-    console.log(e.key)
 
     switch(e.key){
         case '+':
@@ -114,28 +97,25 @@ document.addEventListener('keydown', e=>{
 
         case 'ctrl':
             case 'z':
-                deleteAndRestore()
+                undo()
                 break;
 
             case 'y':
-                restore()
+                redo()
                 break;
         break;
         
-        case 'r':
-            
-            alert(COMMANDS.length)
-            break;
+        
     }
 
 })
 
-function deleteAndRestore(){
+
+function undo(){
     
     if(COMMANDS.length>0){LAST=COMMANDS[COMMANDS.length-1]}
-    
-    CTX.clearRect(0, 0, CANVAS.width, CANVAS.height);
-    COMMANDS.pop()
+    CTX.clearRect(0, 0, CANVAS.width, CANVAS.height); //Clears Canvas
+    COMMANDS.pop() //Deletes Last Command
     let actual;
     
     for(let i=0; i<COMMANDS.length;i++){
@@ -165,7 +145,7 @@ function deleteAndRestore(){
     }
 }
 
-function restore(){
+function redo(){
     
     if(LAST.length==0)return;
     COMMANDS.push(LAST)
