@@ -4,8 +4,9 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dinosaurio</title>
+    <title>My Paint App</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="icon" href="./art.png">
 </head>
 <body>
     <header>
@@ -13,11 +14,12 @@
             <div id="colors" class="grid-colores"></div>
 
             <div class="tools" ></div>
-            <button onclick="undo()" class="button-18"> Undo</button>
-             <button onclick="redo()" class="button-18"> Redo </button>
-             <button class="button-18">Cuadrado</button>
-             <button class="button-18">Triangulo</button>
-             <button class="button-18"></button>
+            <button id="undo-btn" onclick="undo()" class="button-18"> Undo</button>
+            <button id="redo-btn" onclick="redo()" class="button-18"> Redo </button>
+            <button id="brush-btn" class="button-18">Pincel</button>
+            <button id="square-btn" class="button-18">Cuadrado</button>
+            <button id="triangle-btn"  class="button-18">Triangulo</button>
+            <button id="circle-btn"  class="button-18">Circulo</button>
         </nav>
     </header>
     <div class="center">
