@@ -2,6 +2,7 @@
 let CANVAS = document.getElementById("myCanvas")
 let CTX = CANVAS.getContext("2d")
 let METHOD="brush";
+let MODE="stroke"
 let DRAWING=false;
 let prevX, prevY;
 let SNAPSHOT;
@@ -19,6 +20,7 @@ let AUX = [];
 let LAST;
 
 
+
 //HTML BUTTONS AND LISTENERS
 
 let activateSquare = document.getElementById('square-btn')
@@ -31,6 +33,13 @@ activateSquare.addEventListener('click', ()=>{METHOD="square"})
 activateCircle.addEventListener('click', ()=>{METHOD="circle"})
 activateTriangle.addEventListener('click', ()=>{METHOD="triangle"})
 
+let modeFill = document.getElementById('fill-color-btn')
+let modeFillShape = document.getElementById('fill-shape-btn')
+let modeStroke = document.getElementById('stroke-shape-btn')
+
+modeFill.addEventListener('click', ()=>{MODE="fill"})
+modeStroke.addEventListener('click', ()=>{MODE="stroke"})
+modeFillShape.addEventListener('click', ()=>{MODE="fill-shape"})
 
 //Function executed on DOMContentLoaded
 function init(){
@@ -55,7 +64,7 @@ function init(){
 function startPath(e){
     
     DRAWING=true;
-    SNAPSHOT = CTX.getImageData(0, 0, CANVAS.width, CANVAS.height);
+    
     
     switch (METHOD) {
 
@@ -70,11 +79,15 @@ function startPath(e){
             break;
     
         case 'circle':
-            CTX.beginPath();
+            if(MODE=="stroke"|| MODE=="fill"){SNAPSHOT = CTX.getImageData(0, 0, CANVAS.width, CANVAS.height);}
             prevX=e.offsetX;
             prevY=e.offsetY;
             
-            
+        case 'square':
+            if(MODE=="stroke"|| MODE=="fill"){SNAPSHOT = CTX.getImageData(0, 0, CANVAS.width, CANVAS.height);}
+            CTX.beginPath();
+            prevX=e.offsetX;
+            prevY=e.offsetY;
             
 
     }
@@ -85,7 +98,6 @@ function draw(e){
    
     if(!DRAWING)return;
     
-    CTX.putImageData(SNAPSHOT, 0, 0); 
     switch (METHOD) {
         case 'brush':
             CTX.lineCap="round";
@@ -96,12 +108,22 @@ function draw(e){
             break;
 
         case 'circle':
+            
+            if(MODE=="stroke" || MODE=="fill"){CTX.putImageData(SNAPSHOT, 0, 0); }
             CTX.beginPath()
             RADIUS =  Math.sqrt(Math.pow((prevX - e.offsetX), 2) + Math.pow((prevY - e.offsetY), 2));
             CTX.arc(prevX, prevY, RADIUS,0,Math.PI*2);
-            
-            CTX.stroke()
-            
+            if(MODE=="fill-shape"){AUX.push({prevX:prevX, prevY:prevY, radius:RADIUS, offsetX:e.offsetX, offsetY:e.offsetY, type:METHOD, width: CTX.lineWidth, fillStyle:CTX.fillStyle, strokeStyle:CTX.strokeStyle, mode:MODE})}
+            if(MODE=="fill"){CTX.fill()} else {CTX.stroke()}
+            break;
+        
+        case 'square':
+            if(MODE=="stroke" || MODE=="fill"){CTX.putImageData(SNAPSHOT, 0, 0); }
+            CTX.beginPath()
+            CTX.rect(prevX, prevY, prevX-e.offsetX, prevY-e.offsetY);
+            if(MODE=="fill-shape"){AUX.push({prevX:prevX, prevY:prevY, offsetX:e.offsetX, offsetY:e.offsetY, type:METHOD, width: CTX.lineWidth, fillStyle:CTX.fillStyle, strokeStyle:CTX.strokeStyle, mode:MODE})}
+            if(MODE=="fill"){CTX.fill();} else {CTX.stroke()}
+
             break;
     
         
@@ -125,20 +147,26 @@ CANVAS.addEventListener('mouseup', e=>{
     DRAWING=false;
     switch(METHOD){
         case 'circle':
-            AUX.push({prevX:prevX, prevY:prevY, radius:RADIUS, type:METHOD, width: CTX.lineWidth, fillStyle:CTX.fillStyle, strokeStyle:CTX.strokeStyle})
+            if(MODE!="fill-shape"){AUX.push({prevX:prevX, prevY:prevY, radius:RADIUS, type:METHOD, width: CTX.lineWidth, fillStyle:CTX.fillStyle, strokeStyle:CTX.strokeStyle, mode:MODE})}
+            
             break;
             
-            case 'brush':
-                break;
+        case 'brush':
+            break;
                 
-            }
+        case 'square':
+            if(MODE!="fill-shape"){AUX.push({prevX:prevX, prevY:prevY, offsetX:e.offsetX, offsetY:e.offsetY, type:METHOD, width: CTX.lineWidth, fillStyle:CTX.fillStyle, strokeStyle:CTX.strokeStyle, mode:MODE})}
+            
+            break;
+        
+        }
+
+
+
             COMMANDS.push(AUX)
             LAST=AUX;
             AUX=[]
-        }
-        
-        
-        )
+        })
         
 
 
@@ -231,7 +259,18 @@ function undo(){
                     CTX.strokeStyle=actual.strokeStyle;
                     CTX.fillStyle=actual.fillStyle;
                     CTX.arc(actual.prevX,actual.prevY, actual.radius,0,Math.PI*2);
-                    CTX.stroke()
+                    if(actual.mode=="fill"){CTX.fill()} else {CTX.stroke();}
+                    
+                break;
+
+                case 'square':
+                    CTX.beginPath()
+                    CTX.lineWidth=actual.width;
+                    CTX.strokeStyle=actual.strokeStyle;
+                    CTX.fillStyle=actual.fillStyle;
+                    CTX.rect(actual.prevX, actual.prevY, actual.prevX-actual.offsetX, actual.prevY-actual.offsetY);
+                    if(actual.mode=="fill"){CTX.fill()} else {CTX.stroke()}
+                    break;
             }
         }
     }
@@ -274,7 +313,17 @@ function redo(){
                 CTX.strokeStyle=actual.strokeStyle;
                 CTX.fillStyle=actual.fillStyle;
                 CTX.arc(actual.prevX,actual.prevY, actual.radius,0,Math.PI*2);
-                CTX.stroke()
+                if(actual.mode=="fill"){CTX.fill()} else {CTX.stroke();}
+            break;
+
+            case 'square':
+                    CTX.beginPath()
+                    CTX.lineWidth=actual.width;
+                    CTX.strokeStyle=actual.strokeStyle;
+                    CTX.fillStyle=actual.fillStyle;
+                    CTX.rect(actual.prevX, actual.prevY, actual.prevX-actual.offsetX, actual.prevY-actual.offsetY);
+                    if(actual.mode=="fill"){CTX.fill()} else {CTX.stroke()}
+                    break;
         }
         
     }
