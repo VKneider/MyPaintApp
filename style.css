@@ -97,3 +97,9 @@ html, body {
 }
 
 button{margin:5px}
+
+#background, #myCanvas{
+  top: 240px;
+  left: 0px;
+  position: absolute;
+}
