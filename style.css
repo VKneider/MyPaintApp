@@ -34,6 +34,7 @@
 }
 
 .navbar{
+    width: 100%;
     background-color: gray;
     margin-top: 0px;
     margin-bottom: 15px;

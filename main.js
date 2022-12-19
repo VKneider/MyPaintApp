@@ -12,6 +12,7 @@ let lastColor;
 
 
 
+
 //Background Canvas
 let BACKGROUND_CANVAS = document.getElementById('background')
 let BACKGROUND_CTX = BACKGROUND_CANVAS.getContext('2d')
@@ -61,12 +62,18 @@ let activateCircle = document.getElementById('circle-btn')
 let activateTriangle = document.getElementById('triangle-btn')
 let activateBrush = document.getElementById('brush-btn')
 let activateEraser = document.getElementById('eraser-btn')
+let moreWidth =document.getElementById('moreWidth')
+let lessWidth =document.getElementById('lessWidth')
+
+moreWidth.addEventListener('click', ()=>{CTX.lineWidth+=10;})
+lessWidth.addEventListener('click', ()=>{CTX.lineWidth-=10;})
 
 activateBrush.addEventListener('click', ()=>{METHOD="brush"})
 activateSquare.addEventListener('click', ()=>{METHOD="square"})
 activateCircle.addEventListener('click', ()=>{METHOD="circle"})
 activateTriangle.addEventListener('click', ()=>{METHOD="triangle"})
 activateEraser.addEventListener('click', ()=>{METHOD="eraser"})
+
 
 let modeFill = document.getElementById('fill-color-btn')
 let modeFillShape = document.getElementById('fill-shape-btn')
@@ -78,6 +85,8 @@ modeFillShape.addEventListener('click', ()=>{MODE="fill-shape"})
 
 //Function executed on DOMContentLoaded
 function init(){
+    
+    
     CANVAS.addEventListener("touchstart", touchHandler, true);
     CANVAS.addEventListener("touchmove", touchHandler, true);
     CANVAS.addEventListener("touchend", touchHandler, true);
