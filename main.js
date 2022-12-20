@@ -91,8 +91,8 @@ function init(){
     CANVAS.addEventListener("touchmove", touchHandler, true);
     CANVAS.addEventListener("touchend", touchHandler, true);
     CANVAS.addEventListener("touchcancel", touchHandler, true);    
-    CANVAS.width = window.innerWidth - 2;
-    CANVAS.height = window.innerHeight * 0.8;
+    CANVAS.width = window.innerWidth*0.9;
+    CANVAS.height = window.innerHeight * 0.7;
     BACKGROUND_CANVAS.width=CANVAS.width;
     BACKGROUND_CANVAS.height=CANVAS.height;
 

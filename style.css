@@ -101,6 +101,6 @@ button{margin:5px}
 
 #background, #myCanvas{
   top: 240px;
-  left: 0px;
+  left: 20px;
   position: absolute;
 }
