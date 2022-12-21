@@ -69,7 +69,7 @@ let clearCanvasBtn = document.getElementById('clearCanvas-btn')
 moreWidth.addEventListener('click', ()=>{CTX.lineWidth+=10;})
 lessWidth.addEventListener('click', ()=>{CTX.lineWidth-=10;})
 clearCanvasBtn.addEventListener('click', ()=>{
-    CTX.clearRect(0,0,CANVAS.height,CANVAS.width)
+    CTX.clearRect(0, 0, CANVAS.width, CANVAS.height);
 })
 
 activateBrush.addEventListener('click', ()=>{METHOD="brush"})
