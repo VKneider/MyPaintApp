@@ -64,9 +64,13 @@ let activateBrush = document.getElementById('brush-btn')
 let activateEraser = document.getElementById('eraser-btn')
 let moreWidth =document.getElementById('moreWidth')
 let lessWidth =document.getElementById('lessWidth')
+let clearCanvasBtn = document.getElementById('clearCanvas-btn')
 
 moreWidth.addEventListener('click', ()=>{CTX.lineWidth+=10;})
 lessWidth.addEventListener('click', ()=>{CTX.lineWidth-=10;})
+clearCanvasBtn.addEventListener('click', ()=>{
+    CTX.clearRect(0,0,CANVAS.height,CANVAS.width)
+})
 
 activateBrush.addEventListener('click', ()=>{METHOD="brush"})
 activateSquare.addEventListener('click', ()=>{METHOD="square"})
