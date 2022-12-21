@@ -4,23 +4,37 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dinosaurio</title>
+    <title>My Paint App</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="icon" href="./art.png">
 </head>
 <body>
     <header>
         <nav class="flex navbar">
-            <div id="colors" class="grid-colores"></div>
+            <div id="colors" class="grid-colores">
+                <div class="container"></div>
+            </div>
 
             <div class="tools" ></div>
-            <button onclick="undo()" class="button-18"> Undo</button>
-             <button onclick="redo()" class="button-18"> Redo </button>
-             <button class="button-18">Cuadrado</button>
-             <button class="button-18">Triangulo</button>
-             <button class="button-18"></button>
-        </nav>
+            <button id="undo-btn" onclick="undo()" class="button-18"> Undo</button>
+            <button id="redo-btn" onclick="redo()" class="button-18"> Redo </button>
+            <button id="brush-btn" class="button-18">Pincel</button>
+            <button id="moreWidth"  class="button-18">+</button>
+            <button id="lessWidth"  class="button-18">-</button>
+            <button id="clearCanvas-btn"  class="button-18">Delete</button>
+            <button id="square-btn" class="button-18">Cuadrado</button>
+            <button id="triangle-btn"  class="button-18">Triangulo</button>
+            <button id="circle-btn"  class="button-18">Circulo</button>
+            <button id="eraser-btn"  class="button-18">Borrador</button>
+            <button id="change-background-btn"  class="button-18">Change Background</button>
+            <button id="fill-shape-btn"  class="button-18">Fill Shape</button>
+            <button id="fill-color-btn"  class="button-18">Fill Color</button>
+            <button id="stroke-shape-btn"  class="button-18">Stroke</button>
+            <input type="color" id="background-color">
+       </nav>
     </header>
     <div class="center">
+        <canvas id="background"></canvas>
         <canvas id="myCanvas"></canvas>
     </div>
     <script src="main.js"></script>
