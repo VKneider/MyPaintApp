@@ -30,14 +30,14 @@
     margin:15px;
     display: grid;
     gap:0.5rem;
-    grid-template-columns: 1fr 1fr 1fr 1fr;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
 }
 
 .navbar{
     width: 100%;
     background-color: gray;
     margin-top: 0px;
-    margin-bottom: 15px;
+    margin-bottom: 0px;
 }
 
 .active{
@@ -47,6 +47,7 @@
 html, body {
     max-width: 100%;
     overflow-y: hidden;
+    
 
   }
   
@@ -100,7 +101,7 @@ html, body {
 button{margin:5px}
 
 #background, #myCanvas{
-  top: 240px;
-  left: 20px;
+  top: 225px;
+  left: 0px;
   position: absolute;
 }
