@@ -70,6 +70,7 @@ moreWidth.addEventListener('click', ()=>{CTX.lineWidth+=10;})
 lessWidth.addEventListener('click', ()=>{CTX.lineWidth-=10;})
 clearCanvasBtn.addEventListener('click', ()=>{
     CTX.clearRect(0, 0, CANVAS.width, CANVAS.height);
+    COMMANDS=[]
 })
 
 activateBrush.addEventListener('click', ()=>{METHOD="brush"})
