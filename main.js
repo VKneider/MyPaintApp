@@ -242,7 +242,7 @@ CANVAS.addEventListener('mouseup', e=>{
 
 
             COMMANDS.push(AUX)
-            LAST=AUX;
+            LAST=AUX.map(x=>{x})
             AUX=[]
         })
         
