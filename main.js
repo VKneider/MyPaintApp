@@ -282,10 +282,12 @@ document.addEventListener('keydown', e=>{
             break;
         case 'ctrl':
             case 'z':
+                if(DRAWING) return;
                 undo()
                 break;
 
             case 'y':
+                if(DRAWING) return;
                 redo()
                 break;
         break;
