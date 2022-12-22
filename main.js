@@ -49,6 +49,7 @@ let modeStroke = document.getElementById('stroke-shape-btn')
 let backgroundInput = document.getElementById('background-color')
 let changeBackground = document.getElementById('change-background-btn')
 let downloadBtn = document.getElementById('download-btn')
+let activateStar = document.getElementById('star-btn')
 
 
 
@@ -73,6 +74,7 @@ clearCanvasBtn.addEventListener('click', () => {
     COMMANDS = []
 })
 
+activateStar.addEventListener('click', () => { METHOD = "star" })
 activateBrush.addEventListener('click', () => { METHOD = "brush" })
 activateSquare.addEventListener('click', () => { METHOD = "square" })
 activateCircle.addEventListener('click', () => { METHOD = "circle" })
@@ -230,6 +232,10 @@ function init() {
         colors.id = colors[i];
         colorsContainer.appendChild(color)
     }
+
+
+    drawStar(175, 100, 12, 30, 10);
+    drawStar(500, 100, 5, 100, 50);
 }
 
 
@@ -255,6 +261,7 @@ function startPath(e) {
         case 'circle':
         case 'square':
         case 'triangle':
+        case 'star':
             if (MODE == "stroke" || MODE == "fill") { SNAPSHOT = CTX.getImageData(0, 0, CANVAS.width, CANVAS.height); }
             prevX = e.offsetX;
             prevY = e.offsetY;
@@ -317,6 +324,19 @@ function draw(e) {
             CTX.closePath()
             if (MODE == "fill-shape") { AUX.push({ prevX: prevX, prevY: prevY, offsetX: e.offsetX, offsetY: e.offsetY, type: METHOD, width: CTX.lineWidth, fillStyle: CTX.fillStyle, strokeStyle: CTX.strokeStyle, mode: MODE }) }
             if (MODE == "fill") { CTX.fill(); } else { CTX.stroke() }
+            break;
+
+
+
+        case 'star':
+            if (MODE == "stroke" || MODE == "fill") { CTX.putImageData(SNAPSHOT, 0, 0); }
+            CTX.beginPath()
+            CTX.moveTo(prevX, prevY);
+            CTX.lineTo(e.offsetX, e.offsetY);
+            CTX.lineTo(prevX*2+e.offsetX, e.offsetY);
+            CTX.stroke()
+            CTX.closePath()
+
             break;
 
         case 'eraser':
@@ -670,3 +690,36 @@ function touchHandler(event) {
     first.target.dispatchEvent(simulatedEvent);
     event.preventDefault();
 }
+
+function drawStar(cx, cy, spikes, outerRadius, innerRadius) {
+    var rot = Math.PI / 2 * 3;
+    var x = cx;
+    var y = cy;
+    var step = Math.PI / spikes;
+
+    CTX.strokeSyle = "#000";
+    CTX.beginPath();
+    CTX.moveTo(cx, cy - outerRadius)
+    for (i = 0; i < spikes; i++) {
+        x = cx + Math.cos(rot) * outerRadius;
+        y = cy + Math.sin(rot) * outerRadius;
+        CTX.lineTo(x, y)
+        rot += step
+
+        x = cx + Math.cos(rot) * innerRadius;
+        y = cy + Math.sin(rot) * innerRadius;
+        CTX.lineTo(x, y)
+        rot += step
+    }
+    CTX.lineTo(cx, cy - outerRadius)
+    CTX.closePath();
+    CTX.lineWidth=5;
+    CTX.strokeStyle='blue';
+    CTX.stroke();
+    CTX.fillStyle='skyblue';
+    CTX.fill();
+
+}
+
+
+//Function to draw a star with offset coordinates with a given radius html canvas 
