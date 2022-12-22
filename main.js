@@ -298,7 +298,7 @@ document.addEventListener('keydown', e=>{
 
 function undo(){
     
-    if(COMMANDS.length>0){LAST=COMMANDS[COMMANDS.length-1]}
+    if(COMMANDS.length>0){LAST=COMMANDS.map(x=>{x}); LAST.pop();}
     CTX.clearRect(0, 0, CANVAS.width, CANVAS.height); //Clears Canvas
     
     COMMANDS.pop() //Deletes Last Command
