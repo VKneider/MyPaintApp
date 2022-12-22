@@ -242,13 +242,37 @@ CANVAS.addEventListener('mouseup', e=>{
 
 
             COMMANDS.push(AUX)
-            LAST=AUX.map(x=>{x})
+            LAST=cloneArray(AUX)
             AUX=[]
         })
         
 
 
-CANVAS.addEventListener('mouseleave', ()=>{ DRAWING=false;})
+CANVAS.addEventListener('mouseleave', ()=>{ DRAWING=false;
+
+    switch(METHOD){
+        case 'circle':
+            if(MODE!="fill-shape"){AUX.push({prevX:prevX, prevY:prevY, radius:RADIUS, type:METHOD, width: CTX.lineWidth, fillStyle:CTX.fillStyle, strokeStyle:CTX.strokeStyle, mode:MODE})}
+            
+            break;
+            
+        case 'brush':
+            break;
+                
+        case 'square':
+            if(MODE!="fill-shape"){AUX.push({prevX:prevX, prevY:prevY, offsetX:e.offsetX, offsetY:e.offsetY, type:METHOD, width: CTX.lineWidth, fillStyle:CTX.fillStyle, strokeStyle:CTX.strokeStyle, mode:MODE})}
+            
+            break;
+        
+        }
+
+
+
+            COMMANDS.push(AUX)
+            LAST=cloneArray(AUX)
+            AUX=[]
+
+})
 
 
 
@@ -300,7 +324,13 @@ document.addEventListener('keydown', e=>{
 
 function undo(){
     
-    if(COMMANDS.length>0){LAST=COMMANDS.map(x=>{x}); LAST.pop();}
+    if(COMMANDS.length>0){
+        
+        console.log('antes',LAST)
+        LAST=cloneArray(COMMANDS).pop()
+        console.log('dsps', LAST)
+    
+    }
     CTX.clearRect(0, 0, CANVAS.width, CANVAS.height); //Clears Canvas
     
     COMMANDS.pop() //Deletes Last Command
@@ -379,12 +409,13 @@ function undo(){
 }
 
 function redo(){
-    
+    console.log('llego', LAST)
     if(LAST.length==0)return;
     COMMANDS.push(LAST)
-
+    
     for(let j=0; j<LAST.length;j++){
         actual=LAST[j];
+        console.log('actual', actual)
 
         switch (actual.type) {
             case 'first':
@@ -409,7 +440,7 @@ function redo(){
             break;
 
             case 'circle':
-                console.log('redo')
+                
                 CTX.beginPath()
                 CTX.lineWidth=actual.width;
                 CTX.strokeStyle=actual.strokeStyle;
@@ -567,4 +598,8 @@ function reDraw(){
 
 function clearCanvas(canvas){
     canvas.clearRect(0,0,canvas.width, canvas.height);
+}
+
+function cloneArray(array){
+    return JSON.parse(JSON.stringify(array))
 }
