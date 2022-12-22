@@ -117,6 +117,10 @@ CANVAS.addEventListener('mouseup', e => {
         case 'square':
             if (MODE != "fill-shape") { AUX.push({ prevX: prevX, prevY: prevY, offsetX: e.offsetX, offsetY: e.offsetY, type: METHOD, width: CTX.lineWidth, fillStyle: CTX.fillStyle, strokeStyle: CTX.strokeStyle, mode: MODE }) }
             break;
+
+        case 'triangle':
+            if (MODE != "fill-shape") { AUX.push({ prevX: prevX, prevY: prevY, offsetX: e.offsetX, offsetY: e.offsetY, type: METHOD, width: CTX.lineWidth, fillStyle: CTX.fillStyle, strokeStyle: CTX.strokeStyle, mode: MODE }) }
+            break;
     }
 
     COMMANDS.push(AUX)
@@ -126,20 +130,23 @@ CANVAS.addEventListener('mouseup', e => {
 
 
 
-CANVAS.addEventListener('mouseleave', () => {
+CANVAS.addEventListener('mouseleave', (e) => {
     if (!DRAWING) { DRAWING = false; return; }
     DRAWING = false;
 
     switch (METHOD) {
         case 'circle':
-            if (MODE != "fill-shape") { AUX.push({ prevX: prevX, prevY: prevY, radius: RADIUS, type: METHOD, width: CTX.lineWidth, fillStyle: CTX.fillStyle, strokeStyle: CTX.strokeStyle, mode: MODE }) }
-            break;
-
-        case 'brush':
+            if(MODE!="fill-shape"){AUX.push({ prevX: prevX, prevY: prevY, radius: RADIUS, type: METHOD, width: CTX.lineWidth, fillStyle: CTX.fillStyle, strokeStyle: CTX.strokeStyle, mode: MODE }) }
             break;
 
         case 'square':
-            if (MODE != "fill-shape") { AUX.push({ prevX: prevX, prevY: prevY, offsetX: e.offsetX, offsetY: e.offsetY, type: METHOD, width: CTX.lineWidth, fillStyle: CTX.fillStyle, strokeStyle: CTX.strokeStyle, mode: MODE }) }
+        case 'triangle':
+        if(MODE != "fill-shape"){
+
+            AUX.push({ prevX: prevX, prevY: prevY, offsetX: e.offsetX, offsetY: e.offsetY, type: METHOD, width: CTX.lineWidth, fillStyle: CTX.fillStyle, strokeStyle: CTX.strokeStyle, mode: MODE }) 
+
+        }
+
             break;
 
     }
@@ -247,6 +254,7 @@ function startPath(e) {
 
         case 'circle':
         case 'square':
+        case 'triangle':
             if (MODE == "stroke" || MODE == "fill") { SNAPSHOT = CTX.getImageData(0, 0, CANVAS.width, CANVAS.height); }
             prevX = e.offsetX;
             prevY = e.offsetY;
@@ -298,6 +306,17 @@ function draw(e) {
             if (MODE == "fill-shape") { AUX.push({ prevX: prevX, prevY: prevY, offsetX: e.offsetX, offsetY: e.offsetY, type: METHOD, width: CTX.lineWidth, fillStyle: CTX.fillStyle, strokeStyle: CTX.strokeStyle, mode: MODE }) }
             if (MODE == "fill") { CTX.fill(); } else { CTX.stroke() }
 
+            break;
+
+        case 'triangle':
+            if (MODE == "stroke" || MODE == "fill") { CTX.putImageData(SNAPSHOT, 0, 0); }
+            CTX.beginPath()
+            CTX.moveTo(prevX, prevY);
+            CTX.lineTo(e.offsetX, e.offsetY);
+            CTX.lineTo(prevX*2-e.offsetX, e.offsetY);
+            CTX.closePath()
+            if (MODE == "fill-shape") { AUX.push({ prevX: prevX, prevY: prevY, offsetX: e.offsetX, offsetY: e.offsetY, type: METHOD, width: CTX.lineWidth, fillStyle: CTX.fillStyle, strokeStyle: CTX.strokeStyle, mode: MODE }) }
+            if (MODE == "fill") { CTX.fill(); } else { CTX.stroke() }
             break;
 
         case 'eraser':
@@ -362,6 +381,19 @@ function undo() {
 
                     break;
 
+                case 'triangle':
+                    
+                    CTX.beginPath()
+                    CTX.lineWidth = actual.width;
+                    CTX.strokeStyle = actual.strokeStyle;
+                    CTX.fillStyle = actual.fillStyle;
+                    CTX.moveTo(actual.prevX, actual.prevY);
+                    CTX.lineTo(actual.offsetX, actual.offsetY);
+                    CTX.lineTo(actual.prevX*2-actual.offsetX, actual.offsetY);
+                    CTX.closePath()
+                    if (actual.mode == "fill") { CTX.fill() } else { CTX.stroke(); }
+                    break;
+
                 case 'square':
                     CTX.beginPath()
                     CTX.lineWidth = actual.width;
@@ -418,6 +450,19 @@ function redo() {
                 CTX.beginPath()
                 CTX.moveTo(actual.x, actual.y)
                 CTX.fillStyle = actual.fillStyle;
+                break;
+
+            case 'triangle':
+                    
+                CTX.beginPath()
+                CTX.lineWidth = actual.width;
+                CTX.strokeStyle = actual.strokeStyle;
+                CTX.fillStyle = actual.fillStyle;
+                CTX.moveTo(actual.prevX, actual.prevY);
+                CTX.lineTo(actual.offsetX, actual.offsetY);
+                CTX.lineTo(actual.prevX*2-actual.offsetX, actual.offsetY);
+                CTX.closePath()
+                if (actual.mode == "fill") { CTX.fill() } else { CTX.stroke(); }
                 break;
 
             case 'brush':
@@ -501,6 +546,19 @@ function reDraw(CTX) {
                     CTX.beginPath()
                     CTX.moveTo(actual.x, actual.y)
                     CTX.fillStyle = actual.fillStyle;
+                    break;
+
+                    case 'triangle':
+                    
+                    CTX.beginPath()
+                    CTX.lineWidth = actual.width;
+                    CTX.strokeStyle = actual.strokeStyle;
+                    CTX.fillStyle = actual.fillStyle;
+                    CTX.moveTo(actual.prevX, actual.prevY);
+                    CTX.lineTo(actual.offsetX, actual.offsetY);
+                    CTX.lineTo(actual.prevX*2-actual.offsetX, actual.offsetY);
+                    CTX.closePath()
+                    if (actual.mode == "fill") { CTX.fill() } else { CTX.stroke(); }
                     break;
 
                 case 'brush':
