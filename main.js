@@ -66,6 +66,9 @@ changeBackground.addEventListener('click', () => {
     BACKGROUND_CTX.fill()
     CTX.clearRect(0, 0, CANVAS.height, CANVAS.width)
     reDraw(CTX);
+    CTX.lineWidth = lastContext.lineWidth;
+    CTX.strokeStyle = lastContext.strokeStyle;
+    CTX.fillStyle = lastContext.fillStyle;
 })
 
 moreWidth.addEventListener('click', () => { CTX.lineWidth += 10; })
@@ -91,7 +94,6 @@ downloadBtn.addEventListener('click', () => {
     reDraw(BACKGROUND_CTX)
     saveCanvas()
     BACKGROUND_CTX.clearRect(0, 0, BACKGROUND_CANVAS.width, BACKGROUND_CANVAS.height)
-    BACKGROUND = backgroundInput.value;
     BACKGROUND_CTX.fillStyle = BACKGROUND;
     BACKGROUND_CTX.rect(0, 0, BACKGROUND_CANVAS.width, BACKGROUND_CANVAS.height)
     BACKGROUND_CTX.fill()
@@ -160,7 +162,6 @@ CANVAS.addEventListener('mouseleave', (e) => {
         case 'star':
             if(MODE!="fill-shape"){
                 
-                RADIUS = Math.sqrt(Math.pow((prevX - e.offsetX), 2) + Math.pow((prevY - e.offsetY), 2));
                 ACTUAL={ prevX: prevX, prevY: prevY, radius: RADIUS, offsetX: e.offsetX, offsetY: e.offsetY, type: METHOD, width: CTX.lineWidth, fillStyle: CTX.fillStyle, strokeStyle: CTX.strokeStyle, mode: MODE, spikes: SPIKES}
                 AUX.push(ACTUAL);
                 break;
@@ -175,7 +176,7 @@ CANVAS.addEventListener('mouseleave', (e) => {
 document.addEventListener('DOMContentLoaded', init)
 
 document.addEventListener('keydown', e => {
-
+    if (DRAWING) return;
     switch (e.key) {
         case '+':
             CTX.lineWidth += 10;
@@ -200,7 +201,6 @@ document.addEventListener('keydown', e => {
         case 'ctrl':
             case 'z':
                 case 'Z':
-                if (DRAWING) return;
                 undo()
                 break;
 
@@ -208,7 +208,7 @@ document.addEventListener('keydown', e => {
             
             case 'y':
                 case 'Y':
-                if (DRAWING) return;
+                
                 redo()
                 break;
                 break;
@@ -337,9 +337,9 @@ function draw(e) {
         case 'star':
             if (MODE == "stroke" || MODE == "fill") { CTX.putImageData(SNAPSHOT, 0, 0); }
             RADIUS = Math.sqrt(Math.pow((prevX - e.offsetX), 2) + Math.pow((prevY - e.offsetY), 2));
-            ACTUAL={ prevX: prevX, prevY: prevY, radius: RADIUS, offsetX: e.offsetX, offsetY: e.offsetY, type: METHOD, width: CTX.lineWidth, fillStyle: CTX.fillStyle, strokeStyle: CTX.strokeStyle, mode: MODE, spikes: SPIKES}
-            if (MODE == "fill-shape") {AUX.push(ACTUAL) }
+            ACTUAL={ prevX: prevX, prevY: prevY, radius:  RADIUS, offsetX: e.offsetX, offsetY: e.offsetY, type: METHOD, width: CTX.lineWidth, fillStyle: CTX.fillStyle, strokeStyle: CTX.strokeStyle, mode: MODE, spikes: SPIKES}
             drawStar(CTX,ACTUAL)
+            if (MODE == "fill-shape") {AUX.push(ACTUAL) }
             break;
 
         case 'eraser':
@@ -513,6 +513,7 @@ function reDraw(CTX) {
             }
         }
     }
+
 }
 
 
@@ -579,6 +580,9 @@ function drawStar(CTX,actual) {
     let step = Math.PI / actual.spikes;
 
     CTX.beginPath();
+    CTX.lineWidth = actual.width;
+    CTX.strokeStyle = actual.strokeStyle;
+    CTX.fillStyle = actual.fillStyle;
     CTX.moveTo(actual.prevX, actual.prevY - outerRadius)
     for (i = 0; i < actual.spikes; i++) {
         x = actual.prevX + Math.cos(rot) * outerRadius;
