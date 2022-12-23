@@ -14,7 +14,8 @@ let lastContext = {
     fillStyle: '#000000',
     lineWidth: CTX.lineWidth
 }
-
+let ACTUAL;
+let SPIKES=5;
 
 //Background Canvas
 let BACKGROUND_CANVAS = document.getElementById('background')
@@ -54,6 +55,7 @@ let activateStar = document.getElementById('star-btn')
 
 
 backgroundInput.value = "#ffffff"
+
 
 // Event Listeners
 changeBackground.addEventListener('click', () => {
@@ -110,19 +112,25 @@ CANVAS.addEventListener('mouseup', e => {
     DRAWING = false;
     switch (METHOD) {
         case 'circle':
-            if (MODE != "fill-shape") { AUX.push({ prevX: prevX, prevY: prevY, radius: RADIUS, type: METHOD, width: CTX.lineWidth, fillStyle: CTX.fillStyle, strokeStyle: CTX.strokeStyle, mode: MODE }) }
+            ACTUAL={prevX: prevX, prevY: prevY, radius: RADIUS, offsetX: e.offsetX, offsetY: e.offsetY, type: METHOD, width: CTX.lineWidth, fillStyle: CTX.fillStyle, strokeStyle: CTX.strokeStyle, mode: MODE }
+            if(MODE!="fill-shape"){AUX.push(ACTUAL)}
             break;
-
-        case 'brush':
-            break;
-
+            
         case 'square':
-            if (MODE != "fill-shape") { AUX.push({ prevX: prevX, prevY: prevY, offsetX: e.offsetX, offsetY: e.offsetY, type: METHOD, width: CTX.lineWidth, fillStyle: CTX.fillStyle, strokeStyle: CTX.strokeStyle, mode: MODE }) }
+        case 'triangle':
+        if(MODE != "fill-shape"){
+            ACTUAL={prevX: prevX, prevY: prevY, offsetX: e.offsetX, offsetY: e.offsetY, type: METHOD, width: CTX.lineWidth, fillStyle: CTX.fillStyle, strokeStyle: CTX.strokeStyle, mode: MODE }
+            AUX.push(ACTUAL) }
             break;
 
-        case 'triangle':
-            if (MODE != "fill-shape") { AUX.push({ prevX: prevX, prevY: prevY, offsetX: e.offsetX, offsetY: e.offsetY, type: METHOD, width: CTX.lineWidth, fillStyle: CTX.fillStyle, strokeStyle: CTX.strokeStyle, mode: MODE }) }
-            break;
+            case 'star':
+                if(MODE!="fill-shape"){
+                    
+                    RADIUS = Math.sqrt(Math.pow((prevX - e.offsetX), 2) + Math.pow((prevY - e.offsetY), 2));
+                    ACTUAL={ prevX: prevX, prevY: prevY, radius: RADIUS, offsetX: e.offsetX, offsetY: e.offsetY, type: METHOD, width: CTX.lineWidth, fillStyle: CTX.fillStyle, strokeStyle: CTX.strokeStyle, mode: MODE, spikes: SPIKES}
+                    AUX.push(ACTUAL);
+                    break;
+                }
     }
 
     COMMANDS.push(AUX)
@@ -138,20 +146,27 @@ CANVAS.addEventListener('mouseleave', (e) => {
 
     switch (METHOD) {
         case 'circle':
-            if(MODE!="fill-shape"){AUX.push({ prevX: prevX, prevY: prevY, radius: RADIUS, type: METHOD, width: CTX.lineWidth, fillStyle: CTX.fillStyle, strokeStyle: CTX.strokeStyle, mode: MODE }) }
+            ACTUAL={prevX: prevX, prevY: prevY, radius: RADIUS, offsetX: e.offsetX, offsetY: e.offsetY, type: METHOD, width: CTX.lineWidth, fillStyle: CTX.fillStyle, strokeStyle: CTX.strokeStyle, mode: MODE }
+            if(MODE!="fill-shape"){AUX.push(ACTUAL)}
             break;
-
+            
         case 'square':
         case 'triangle':
         if(MODE != "fill-shape"){
-
-            AUX.push({ prevX: prevX, prevY: prevY, offsetX: e.offsetX, offsetY: e.offsetY, type: METHOD, width: CTX.lineWidth, fillStyle: CTX.fillStyle, strokeStyle: CTX.strokeStyle, mode: MODE }) 
-
-        }
-
+            ACTUAL={prevX: prevX, prevY: prevY, offsetX: e.offsetX, offsetY: e.offsetY, type: METHOD, width: CTX.lineWidth, fillStyle: CTX.fillStyle, strokeStyle: CTX.strokeStyle, mode: MODE }
+            AUX.push(ACTUAL) }
             break;
-
+        
+        case 'star':
+            if(MODE!="fill-shape"){
+                
+                RADIUS = Math.sqrt(Math.pow((prevX - e.offsetX), 2) + Math.pow((prevY - e.offsetY), 2));
+                ACTUAL={ prevX: prevX, prevY: prevY, radius: RADIUS, offsetX: e.offsetX, offsetY: e.offsetY, type: METHOD, width: CTX.lineWidth, fillStyle: CTX.fillStyle, strokeStyle: CTX.strokeStyle, mode: MODE, spikes: SPIKES}
+                AUX.push(ACTUAL);
+                break;
+            }
     }
+
     COMMANDS.push(AUX)
     LAST = cloneArray(AUX)
     AUX = []
@@ -183,19 +198,29 @@ document.addEventListener('keydown', e => {
             break;
 
         case 'ctrl':
-        case 'z':
-            case 'Z':
-            if (DRAWING) return;
-            undo()
-            break;
+            case 'z':
+                case 'Z':
+                if (DRAWING) return;
+                undo()
+                break;
 
+                
+            
+            case 'y':
+                case 'Y':
+                if (DRAWING) return;
+                redo()
+                break;
+                break;
         
-        case 'y':
-            case 'Y':
-            if (DRAWING) return;
-            redo()
+        case '*':
+            SPIKES++;
             break;
+        
+         case '/':
+            SPIKES--;
             break;
+        
 
 
     }
@@ -217,7 +242,6 @@ function init() {
     BACKGROUND_CANVAS.height = CANVAS.height;
 
 
-
     for (let i = 0; i < colors.length; i++) {
         let color = document.createElement("button");
         color.classList.add("circle")
@@ -233,9 +257,6 @@ function init() {
         colorsContainer.appendChild(color)
     }
 
-
-    drawStar(175, 100, 12, 30, 10);
-    drawStar(500, 100, 5, 100, 50);
 }
 
 
@@ -245,17 +266,14 @@ function startPath(e) {
     lastContext.fillStyle = CTX.fillStyle;
     lastContext.strokeStyle = CTX.strokeStyle;
     lastContext.lineWidth = CTX.lineWidth;
-
+    
+    
     switch (METHOD) {
-
+        
         case 'brush':
-            CTX.beginPath();
-            CTX.arc(e.offsetX, e.offsetY, CTX.lineWidth / 2, 0, Math.PI * 2);
-            CTX.fill();
-            CTX.closePath()
-            CTX.beginPath()
-            CTX.moveTo(e.offsetX, e.offsetY)
-            AUX.push({ x: e.offsetX, y: e.offsetY, width: CTX.lineWidth / 2, from: 0, to: Math.PI * 2, fillStyle: CTX.fillStyle, type: 'first' })
+            ACTUAL={ x: e.offsetX, y: e.offsetY, width: CTX.lineWidth / 2, strokeStyle:CTX.strokeStyle, fillStyle: CTX.fillStyle, type: 'first' }
+            drawBrushEraser(CTX,ACTUAL,true,false)
+            AUX.push(ACTUAL)
             break;
 
         case 'circle':
@@ -268,20 +286,14 @@ function startPath(e) {
             break;
 
         case 'eraser':
-            CTX.beginPath();
-            CTX.fillStyle = BACKGROUND;
-            CTX.arc(e.offsetX, e.offsetY, CTX.lineWidth / 2, 0, Math.PI * 2);
-            CTX.fill();
-            CTX.closePath()
-            CTX.beginPath()
-            CTX.moveTo(e.offsetX, e.offsetY)
-            AUX.push({ x: e.offsetX, y: e.offsetY, width: CTX.lineWidth / 2, from: 0, to: Math.PI * 2, type: 'first-eraser' })
+            ACTUAL={ x: e.offsetX, y: e.offsetY, width: CTX.lineWidth / 2, type: 'first' }
+            drawBrushEraser(CTX,{x:e.offsetX,y:e.offsetY,width: CTX.lineWidth / 2}, true, true)
+            AUX.push(ACTUAL)
             break;
 
     }
 
 }
-
 
 function draw(e) {
 
@@ -289,63 +301,51 @@ function draw(e) {
 
     switch (METHOD) {
         case 'brush':
-            CTX.lineCap = "round";
-            CTX.lineJoin = "round";
-            CTX.lineTo(e.offsetX, e.offsetY)
-            CTX.stroke()
-            AUX.push({ x: e.offsetX, y: e.offsetY, width: CTX.lineWidth, strokeStyle: CTX.strokeStyle, type: METHOD })
+            ACTUAL={ x: e.offsetX, y: e.offsetY, width: CTX.lineWidth, strokeStyle:CTX.strokeStyle, fillStyle: CTX.fillStyle, type: METHOD }
+            drawBrushEraser(CTX,ACTUAL,false,false)
+            AUX.push(ACTUAL)
             break;
 
         case 'circle':
 
             if (MODE == "stroke" || MODE == "fill") { CTX.putImageData(SNAPSHOT, 0, 0); }
-            CTX.beginPath()
             RADIUS = Math.sqrt(Math.pow((prevX - e.offsetX), 2) + Math.pow((prevY - e.offsetY), 2));
-            CTX.arc(prevX, prevY, RADIUS, 0, Math.PI * 2);
-            if (MODE == "fill-shape") { AUX.push({ prevX: prevX, prevY: prevY, radius: RADIUS, offsetX: e.offsetX, offsetY: e.offsetY, type: METHOD, width: CTX.lineWidth, fillStyle: CTX.fillStyle, strokeStyle: CTX.strokeStyle, mode: MODE }) }
-            if (MODE == "fill") { CTX.fill() } else { CTX.stroke() }
+            ACTUAL={prevX: prevX, prevY: prevY, radius: RADIUS, offsetX: e.offsetX, offsetY: e.offsetY, type: METHOD, width: CTX.lineWidth, fillStyle: CTX.fillStyle, strokeStyle: CTX.strokeStyle, mode: MODE }
+            drawCircle(CTX, ACTUAL)
+            if (MODE == "fill-shape") { AUX.push(ACTUAL) }
+            
             break;
 
         case 'square':
             if (MODE == "stroke" || MODE == "fill") { CTX.putImageData(SNAPSHOT, 0, 0); }
-            CTX.beginPath()
-            CTX.rect(prevX, prevY, prevX - e.offsetX, prevY - e.offsetY);
-            if (MODE == "fill-shape") { AUX.push({ prevX: prevX, prevY: prevY, offsetX: e.offsetX, offsetY: e.offsetY, type: METHOD, width: CTX.lineWidth, fillStyle: CTX.fillStyle, strokeStyle: CTX.strokeStyle, mode: MODE }) }
-            if (MODE == "fill") { CTX.fill(); } else { CTX.stroke() }
+            ACTUAL={ prevX: prevX, prevY: prevY, offsetX: e.offsetX, offsetY: e.offsetY, type: METHOD, width: CTX.lineWidth, fillStyle: CTX.fillStyle, strokeStyle: CTX.strokeStyle, mode: MODE };
+            drawSquare(CTX, ACTUAL)
+            if (MODE == "fill-shape") { AUX.push(ACTUAL) }
+            
 
             break;
 
         case 'triangle':
+            ACTUAL={ prevX: prevX, prevY: prevY, offsetX: e.offsetX, offsetY: e.offsetY, type: METHOD, width: CTX.lineWidth, fillStyle: CTX.fillStyle, strokeStyle: CTX.strokeStyle, mode: MODE }
             if (MODE == "stroke" || MODE == "fill") { CTX.putImageData(SNAPSHOT, 0, 0); }
-            CTX.beginPath()
-            CTX.moveTo(prevX, prevY);
-            CTX.lineTo(e.offsetX, e.offsetY);
-            CTX.lineTo(prevX*2-e.offsetX, e.offsetY);
-            CTX.closePath()
-            if (MODE == "fill-shape") { AUX.push({ prevX: prevX, prevY: prevY, offsetX: e.offsetX, offsetY: e.offsetY, type: METHOD, width: CTX.lineWidth, fillStyle: CTX.fillStyle, strokeStyle: CTX.strokeStyle, mode: MODE }) }
-            if (MODE == "fill") { CTX.fill(); } else { CTX.stroke() }
+            drawTriangle(CTX, ACTUAL)
+            if (MODE == "fill-shape") { AUX.push(ACTUAL) }
             break;
 
 
 
         case 'star':
             if (MODE == "stroke" || MODE == "fill") { CTX.putImageData(SNAPSHOT, 0, 0); }
-            CTX.beginPath()
-            CTX.moveTo(prevX, prevY);
-            CTX.lineTo(e.offsetX, e.offsetY);
-            CTX.lineTo(prevX*2+e.offsetX, e.offsetY);
-            CTX.stroke()
-            CTX.closePath()
-
+            RADIUS = Math.sqrt(Math.pow((prevX - e.offsetX), 2) + Math.pow((prevY - e.offsetY), 2));
+            ACTUAL={ prevX: prevX, prevY: prevY, radius: RADIUS, offsetX: e.offsetX, offsetY: e.offsetY, type: METHOD, width: CTX.lineWidth, fillStyle: CTX.fillStyle, strokeStyle: CTX.strokeStyle, mode: MODE, spikes: SPIKES}
+            if (MODE == "fill-shape") {AUX.push(ACTUAL) }
+            drawStar(CTX,ACTUAL)
             break;
 
         case 'eraser':
-            CTX.strokeStyle = BACKGROUND;
-            CTX.lineCap = "round";
-            CTX.lineJoin = "round";
-            CTX.lineTo(e.offsetX, e.offsetY)
-            CTX.stroke()
-            AUX.push({ x: e.offsetX, y: e.offsetY, width: CTX.lineWidth, type: 'eraser' })
+            ACTUAL={ x: e.offsetX, y: e.offsetY, width: CTX.lineWidth , strokeStyle:CTX.strokeStyle, fillStyle: CTX.fillStyle, type: METHOD }
+            drawBrushEraser(CTX,ACTUAL,false,true)
+            AUX.push(ACTUAL)
             CTX.strokeStyle = lastContext.strokeStyle;
             CTX.fillStyle = lastContext.fillStyle;
             break;
@@ -361,86 +361,47 @@ function undo() {
     CTX.clearRect(0, 0, CANVAS.width, CANVAS.height); //Clears Canvas
 
     COMMANDS.pop() //Deletes Last Command
-    let actual;
+    let actualCommand;
 
     for (let i = 0; i < COMMANDS.length; i++) {
 
         for (let j = 0; j < COMMANDS[i].length; j++) {
-            actual = COMMANDS[i][j]
+            actualCommand = COMMANDS[i][j]
 
-            switch (actual.type) {
+            switch (actualCommand.type) {
                 case 'first':
-                    CTX.beginPath();
-                    CTX.strokeStyle = actual.strokeStyle;
-                    CTX.fillStyle = actual.fillStyle;
-                    CTX.arc(actual.x, actual.y, actual.width, actual.from, actual.to);
-                    CTX.fill();
-                    CTX.closePath()
-                    CTX.beginPath()
-                    CTX.moveTo(actual.x, actual.y)
+                    drawBrushEraser(CTX,actualCommand,true,false)
                     break;
 
                 case 'brush':
 
-                    CTX.lineJoin = "round"
-                    CTX.lineCap = "round";
-                    CTX.lineWidth = actual.width;
-                    CTX.strokeStyle = actual.strokeStyle;
-                    CTX.lineTo(actual.x, actual.y)
-                    CTX.stroke()
-                    CTX.lineJoin = "round";
+                drawBrushEraser(CTX,actualCommand,false,false)
                     break;
 
                 case 'circle':
-                    CTX.beginPath()
-                    CTX.lineWidth = actual.width;
-                    CTX.strokeStyle = actual.strokeStyle;
-                    CTX.fillStyle = actual.fillStyle;
-                    CTX.arc(actual.prevX, actual.prevY, actual.radius, 0, Math.PI * 2);
-                    if (actual.mode == "fill") { CTX.fill() } else { CTX.stroke(); }
+                     drawCircle(CTX, actualCommand)
 
                     break;
 
                 case 'triangle':
                     
-                    CTX.beginPath()
-                    CTX.lineWidth = actual.width;
-                    CTX.strokeStyle = actual.strokeStyle;
-                    CTX.fillStyle = actual.fillStyle;
-                    CTX.moveTo(actual.prevX, actual.prevY);
-                    CTX.lineTo(actual.offsetX, actual.offsetY);
-                    CTX.lineTo(actual.prevX*2-actual.offsetX, actual.offsetY);
-                    CTX.closePath()
-                    if (actual.mode == "fill") { CTX.fill() } else { CTX.stroke(); }
+                    drawTriangle(CTX, actualCommand)
                     break;
 
                 case 'square':
-                    CTX.beginPath()
-                    CTX.lineWidth = actual.width;
-                    CTX.strokeStyle = actual.strokeStyle;
-                    CTX.fillStyle = actual.fillStyle;
-                    CTX.rect(actual.prevX, actual.prevY, actual.prevX - actual.offsetX, actual.prevY - actual.offsetY);
-                    if (actual.mode == "fill") { CTX.fill() } else { CTX.stroke() }
+                    drawSquare(CTX, actualCommand)
                     break;
 
                 case 'first-eraser':
-                    CTX.beginPath();
-                    CTX.fillStyle = BACKGROUND;
-                    CTX.arc(actual.x, actual.y, actual.width, actual.from, actual.to);
-                    CTX.fill();
-                    CTX.closePath()
-                    CTX.beginPath()
-                    CTX.moveTo(actual.x, actual.y)
+                    drawBrushEraser(CTX,actualCommand,true,true)
                     break;
 
                 case 'eraser':
-                    CTX.lineJoin = "round"
-                    CTX.lineCap = "round";
-                    CTX.lineWidth = actual.width;
-                    CTX.strokeStyle = BACKGROUND;
-                    CTX.lineTo(actual.x, actual.y)
-                    CTX.stroke()
-                    CTX.lineJoin = "round";
+                    drawBrushEraser(CTX,actualCommand,false,true)
+                    break;
+                
+                case 'star':
+                    drawStar(CTX,actualCommand);
                     break;
             }
         }
@@ -456,85 +417,43 @@ function redo() {
     COMMANDS.push(LAST)
 
     for (let j = 0; j < LAST.length; j++) {
-        actual = LAST[j];
+        actualCommand = LAST[j];
 
 
-        switch (actual.type) {
+        switch (actualCommand.type) {
             case 'first':
-                CTX.beginPath();
-                CTX.beginPath();
-                CTX.strokeStyle = actual.strokeStyle;
-                CTX.arc(actual.x, actual.y, actual.width, actual.from, actual.to);
-                CTX.fill();
-                CTX.closePath()
-                CTX.beginPath()
-                CTX.moveTo(actual.x, actual.y)
-                CTX.fillStyle = actual.fillStyle;
+                drawBrushEraser(CTX,actualCommand,true,false)
                 break;
 
             case 'triangle':
                     
-                CTX.beginPath()
-                CTX.lineWidth = actual.width;
-                CTX.strokeStyle = actual.strokeStyle;
-                CTX.fillStyle = actual.fillStyle;
-                CTX.moveTo(actual.prevX, actual.prevY);
-                CTX.lineTo(actual.offsetX, actual.offsetY);
-                CTX.lineTo(actual.prevX*2-actual.offsetX, actual.offsetY);
-                CTX.closePath()
-                if (actual.mode == "fill") { CTX.fill() } else { CTX.stroke(); }
+                drawTriangle(CTX, actualCommand)
                 break;
 
             case 'brush':
-                CTX.lineJoin = "round"
-                CTX.lineCap = "round";
-                CTX.lineWidth = actual.width;
-                CTX.strokeStyle = actual.strokeStyle;
-                CTX.lineTo(actual.x, actual.y)
-                CTX.stroke()
-                CTX.lineJoin = "round";
+                drawBrushEraser(CTX,actualCommand,false,false)
                 break;
 
             case 'circle':
 
-                CTX.beginPath()
-                CTX.lineWidth = actual.width;
-                CTX.strokeStyle = actual.strokeStyle;
-                CTX.fillStyle = actual.fillStyle;
-                CTX.arc(actual.prevX, actual.prevY, actual.radius, 0, Math.PI * 2);
-                if (actual.mode == "fill") { CTX.fill() } else { CTX.stroke(); }
+            drawCircle(CTX, actualCommand)
                 break;
 
             case 'square':
-                CTX.beginPath()
-                CTX.lineWidth = actual.width;
-                CTX.strokeStyle = actual.strokeStyle;
-                CTX.fillStyle = actual.fillStyle;
-                CTX.rect(actual.prevX, actual.prevY, actual.prevX - actual.offsetX, actual.prevY - actual.offsetY);
-                if (actual.mode == "fill") { CTX.fill() } else { CTX.stroke() }
+                drawSquare(CTX, actualCommand)
                 break;
 
             case 'first-eraser':
-                CTX.beginPath();
-                CTX.fillStyle = BACKGROUND;
-                CTX.arc(actual.x, actual.y, actual.width, actual.from, actual.to);
-                CTX.fill();
-                CTX.closePath()
-                CTX.beginPath()
-                CTX.moveTo(actual.x, actual.y)
+                drawBrushEraser(CTX,actualCommand,true,true)
                 break;
 
             case 'eraser':
-                CTX.lineJoin = "round"
-                CTX.lineCap = "round";
-                CTX.lineWidth = actual.width;
-                CTX.strokeStyle = BACKGROUND;
-                CTX.lineTo(actual.x, actual.y)
-                CTX.stroke()
-                CTX.lineJoin = "round";
-                CTX.strokeStyle = lastColor;
-                CTX.fillStyle = lastColor;
+                drawBrushEraser(CTX,actualCommand,false,true)
                 break;
+            
+                case 'star':
+                    drawStar(CTX,actualCommand);
+                    break;
 
 
         }
@@ -553,91 +472,47 @@ function reDraw(CTX) {
     for (let i = 0; i < COMMANDS.length; i++) {
 
         for (let j = 0; j < COMMANDS[i].length; j++) {
-            actual = COMMANDS[i][j]
+            actualCommand = COMMANDS[i][j]
 
-            switch (actual.type) {
+            switch (actualCommand.type) {
                 case 'first':
-                    CTX.beginPath();
-                    CTX.strokeStyle = actual.strokeStyle;
-                    CTX.fillStyle = actual.fillStyle;
-                    CTX.arc(actual.x, actual.y, actual.width, actual.from, actual.to);
-                    CTX.fill();
-                    CTX.closePath()
-                    CTX.beginPath()
-                    CTX.moveTo(actual.x, actual.y)
-                    CTX.fillStyle = actual.fillStyle;
+                    drawBrushEraser(CTX,actualCommand,true,false)
                     break;
 
                     case 'triangle':
                     
-                    CTX.beginPath()
-                    CTX.lineWidth = actual.width;
-                    CTX.strokeStyle = actual.strokeStyle;
-                    CTX.fillStyle = actual.fillStyle;
-                    CTX.moveTo(actual.prevX, actual.prevY);
-                    CTX.lineTo(actual.offsetX, actual.offsetY);
-                    CTX.lineTo(actual.prevX*2-actual.offsetX, actual.offsetY);
-                    CTX.closePath()
-                    if (actual.mode == "fill") { CTX.fill() } else { CTX.stroke(); }
+                    drawTriangle(CTX, actualCommand)
                     break;
 
                 case 'brush':
-
-                    CTX.lineJoin = "round"
-                    CTX.lineCap = "round";
-                    CTX.lineWidth = actual.width;
-                    CTX.strokeStyle = actual.strokeStyle;
-                    CTX.lineTo(actual.x, actual.y)
-                    CTX.stroke()
-                    CTX.lineJoin = "round";
+                    drawBrushEraser(CTX,actualCommand,false,false)
                     break;
 
                 case 'circle':
-                    CTX.beginPath()
-                    CTX.lineWidth = actual.width;
-                    CTX.strokeStyle = actual.strokeStyle;
-                    CTX.fillStyle = actual.fillStyle;
-                    CTX.arc(actual.prevX, actual.prevY, actual.radius, 0, Math.PI * 2);
-                    if (actual.mode == "fill") { CTX.fill() } else { CTX.stroke(); }
+                    drawCircle(CTX, actualCommand)
 
                     break;
 
                 case 'square':
-                    CTX.beginPath()
-                    CTX.lineWidth = actual.width;
-                    CTX.strokeStyle = actual.strokeStyle;
-                    CTX.fillStyle = actual.fillStyle;
-                    CTX.rect(actual.prevX, actual.prevY, actual.prevX - actual.offsetX, actual.prevY - actual.offsetY);
-                    if (actual.mode == "fill") { CTX.fill() } else { CTX.stroke() }
+                    drawSquare(CTX, actualCommand)
                     break;
 
                 case 'first-eraser':
-                    CTX.beginPath();
-                    CTX.fillStyle = BACKGROUND;
-                    CTX.arc(actual.x, actual.y, actual.width, actual.from, actual.to);
-                    CTX.fill();
-                    CTX.closePath()
-                    CTX.beginPath()
-                    CTX.moveTo(actual.x, actual.y)
+
+                drawBrushEraser(CTX,actualCommand,true,true)
                     break;
 
                 case 'eraser':
-                    CTX.lineJoin = "round"
-                    CTX.lineCap = "round";
-                    CTX.lineWidth = actual.width;
-                    CTX.strokeStyle = BACKGROUND;
-                    CTX.lineTo(actual.x, actual.y)
-                    CTX.stroke()
-                    CTX.lineJoin = "round";
+                drawBrushEraser(CTX,actualCommand,false,true)
                     break;
 
-
+                case 'star':
+                    drawStar(CTX,actualCommand);
+                    break;
 
             }
         }
     }
-
-
 }
 
 
@@ -691,35 +566,93 @@ function touchHandler(event) {
     event.preventDefault();
 }
 
-function drawStar(cx, cy, spikes, outerRadius, innerRadius) {
-    var rot = Math.PI / 2 * 3;
-    var x = cx;
-    var y = cy;
-    var step = Math.PI / spikes;
 
-    CTX.strokeSyle = "#000";
+
+
+function drawStar(CTX,actual) {
+    
+    
+    let outerRadius=actual.radius;
+    let rot = Math.PI / 2 * 3;
+    let x = actual.prevX;
+    let y = actual.prevY;
+    let step = Math.PI / actual.spikes;
+
     CTX.beginPath();
-    CTX.moveTo(cx, cy - outerRadius)
-    for (i = 0; i < spikes; i++) {
-        x = cx + Math.cos(rot) * outerRadius;
-        y = cy + Math.sin(rot) * outerRadius;
+    CTX.moveTo(actual.prevX, actual.prevY - outerRadius)
+    for (i = 0; i < actual.spikes; i++) {
+        x = actual.prevX + Math.cos(rot) * outerRadius;
+        y = actual.prevY + Math.sin(rot) * outerRadius;
         CTX.lineTo(x, y)
         rot += step
 
-        x = cx + Math.cos(rot) * innerRadius;
-        y = cy + Math.sin(rot) * innerRadius;
+        x = actual.prevX + Math.cos(rot) * outerRadius/2;
+        y = actual.prevY + Math.sin(rot) * outerRadius/2;
         CTX.lineTo(x, y)
         rot += step
     }
-    CTX.lineTo(cx, cy - outerRadius)
+    CTX.lineTo(actual.prevX, actual.prevY - outerRadius)
     CTX.closePath();
-    CTX.lineWidth=5;
-    CTX.strokeStyle='blue';
-    CTX.stroke();
-    CTX.fillStyle='skyblue';
-    CTX.fill();
+    if (actual.mode == "fill") { CTX.fill(); } else { CTX.stroke() }
 
 }
 
+function drawBrushEraser(CTX,actual,isFirst,isEraser){
 
-//Function to draw a star with offset coordinates with a given radius html canvas 
+  if((isEraser && isFirst) || isEraser ){
+    CTX.fillStyle = BACKGROUND;
+    CTX.strokeStyle = BACKGROUND;
+   } else
+     {
+        CTX.fillStyle = actual.fillStyle
+        CTX.strokeStyle = actual.strokeStyle
+    } 
+    
+    if(isFirst){
+        CTX.beginPath();
+        CTX.arc(actual.x, actual.y, actual.width,0,Math.PI*2);
+        CTX.fill();
+        CTX.closePath()
+        CTX.beginPath()
+        CTX.moveTo(actual.x, actual.y)
+        
+    } else{
+        CTX.lineJoin = "round";
+        CTX.lineCap = "round";
+        CTX.lineWidth = actual.width;
+        CTX.lineTo(actual.x, actual.y)
+        CTX.stroke()
+    }
+}
+
+function drawTriangle(CTX, actual){
+    CTX.beginPath()
+    CTX.lineWidth = actual.width;
+    CTX.strokeStyle = actual.strokeStyle;
+    CTX.fillStyle = actual.fillStyle;
+    CTX.moveTo(actual.prevX, actual.prevY);
+    CTX.lineTo(actual.offsetX, actual.offsetY);
+    CTX.lineTo(actual.prevX*2-actual.offsetX, actual.offsetY);
+    CTX.closePath()
+    if (actual.mode == "fill") { CTX.fill() } else { CTX.stroke(); }
+    CTX.beginPath()
+}
+
+function drawCircle(CTX, actual){
+    
+    CTX.beginPath()
+    CTX.lineWidth = actual.width;
+    CTX.strokeStyle = actual.strokeStyle;
+    CTX.fillStyle = actual.fillStyle;
+    CTX.arc(actual.prevX, actual.prevY, actual.radius, 0, Math.PI * 2);
+    if (actual.mode == "fill") { CTX.fill() } else { CTX.stroke(); }
+}
+
+function drawSquare(CTX,actual){
+    CTX.beginPath()
+    CTX.lineWidth = actual.width;
+    CTX.strokeStyle = actual.strokeStyle;
+    CTX.fillStyle = actual.fillStyle;
+    CTX.rect(actual.prevX, actual.prevY, actual.prevX - actual.offsetX, actual.prevY - actual.offsetY);
+    if (actual.mode == "fill") { CTX.fill() } else { CTX.stroke() }
+}
