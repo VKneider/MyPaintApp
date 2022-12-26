@@ -259,7 +259,7 @@ function init() {
     BACKGROUND_CANVAS.height = CANVAS.height;
     
    
-
+    drawPolygon(CTX,{prevX: 500, prevY: 200, sides: 5, radius: 200, strokeStyle: "red", fillStyle: "blue", mode: "fill", width:50})
 
     for (let i = 0; i < colors.length; i++) {
         let color = document.createElement("button");
@@ -812,4 +812,31 @@ function drawArrow(ctx, actual) {
 
     }
 
-   
+
+
+    //Javascript function to draw polygons on canvas given the number of sides
+function drawPolygon(ctx,actual) {
+    let sides = actual.sides;
+    let radius = actual.radius;
+    let x = actual.prevX;
+    let y = actual.prevY;
+    let rot;
+    if(actual.sides%2==0){
+         rot = Math.PI 
+    } else {
+         rot = Math.PI-2.2
+    }
+    let step = Math.PI/sides*2;
+    ctx.beginPath();
+    ctx.lineWidth = actual.width;
+    ctx.strokeStyle = actual.strokeStyle;
+    ctx.fillStyle = actual.fillStyle;
+    ctx.moveTo(x + radius * Math.cos(rot), y + radius * Math.sin(rot));
+    for (let i = 0; i < sides; i++) {
+        rot += step;
+        ctx.lineTo(x + radius * Math.cos(rot), y + radius * Math.sin(rot));
+    }
+    ctx.closePath();
+    if (actual.mode == "fill") { ctx.fill() } else { ctx.stroke() }
+}
+
