@@ -35,6 +35,7 @@ let LAST;
 
 
 
+
 //HTML Front Button and Inputs Declarations
 let activateSquare = document.getElementById('square-btn')
 let activateCircle = document.getElementById('circle-btn')
@@ -51,6 +52,8 @@ let backgroundInput = document.getElementById('background-color')
 let changeBackground = document.getElementById('change-background-btn')
 let downloadBtn = document.getElementById('download-btn')
 let activateStar = document.getElementById('star-btn')
+let activateHeart = document.getElementById("heart-btn")
+let activateArrow = document.getElementById("arrow-btn")
 
 
 
@@ -85,19 +88,26 @@ activateSquare.addEventListener('click', () => { METHOD = "square" })
 activateCircle.addEventListener('click', () => { METHOD = "circle" })
 activateTriangle.addEventListener('click', () => { METHOD = "triangle" })
 activateEraser.addEventListener('click', () => { METHOD = "eraser" })
+activateHeart.addEventListener('click', () => { METHOD = "heart" })
+activateArrow.addEventListener('click', () => { METHOD = "arrow" })
+
 modeFill.addEventListener('click', () => { MODE = "fill" })
 modeStroke.addEventListener('click', () => { MODE = "stroke" })
 modeFillShape.addEventListener('click', () => { MODE = "fill-shape" })
+
 
 downloadBtn.addEventListener('click', () => {
     CTX.clearRect(0, 0, CANVAS.width, CANVAS.height)
     reDraw(BACKGROUND_CTX)
     saveCanvas()
     BACKGROUND_CTX.clearRect(0, 0, BACKGROUND_CANVAS.width, BACKGROUND_CANVAS.height)
-    BACKGROUND_CTX.fillStyle = BACKGROUND;
+    if (BACKGROUND == "#ffffff"){reDraw(CTX)} else {
+         BACKGROUND_CTX.fillStyle = BACKGROUND;
     BACKGROUND_CTX.rect(0, 0, BACKGROUND_CANVAS.width, BACKGROUND_CANVAS.height)
     BACKGROUND_CTX.fill()
     reDraw(CTX)
+    }
+   
     
 })
 
@@ -114,12 +124,14 @@ CANVAS.addEventListener('mouseup', e => {
     DRAWING = false;
     switch (METHOD) {
         case 'circle':
+        case 'heart':
             ACTUAL={prevX: prevX, prevY: prevY, radius: RADIUS, offsetX: e.offsetX, offsetY: e.offsetY, type: METHOD, width: CTX.lineWidth, fillStyle: CTX.fillStyle, strokeStyle: CTX.strokeStyle, mode: MODE }
             if(MODE!="fill-shape"){AUX.push(ACTUAL)}
             break;
             
         case 'square':
         case 'triangle':
+        case 'arrow':
         if(MODE != "fill-shape"){
             ACTUAL={prevX: prevX, prevY: prevY, offsetX: e.offsetX, offsetY: e.offsetY, type: METHOD, width: CTX.lineWidth, fillStyle: CTX.fillStyle, strokeStyle: CTX.strokeStyle, mode: MODE }
             AUX.push(ACTUAL) }
@@ -148,12 +160,14 @@ CANVAS.addEventListener('mouseleave', (e) => {
 
     switch (METHOD) {
         case 'circle':
+        case 'heart':
             ACTUAL={prevX: prevX, prevY: prevY, radius: RADIUS, offsetX: e.offsetX, offsetY: e.offsetY, type: METHOD, width: CTX.lineWidth, fillStyle: CTX.fillStyle, strokeStyle: CTX.strokeStyle, mode: MODE }
             if(MODE!="fill-shape"){AUX.push(ACTUAL)}
             break;
             
         case 'square':
         case 'triangle':
+        case 'arrow':
         if(MODE != "fill-shape"){
             ACTUAL={prevX: prevX, prevY: prevY, offsetX: e.offsetX, offsetY: e.offsetY, type: METHOD, width: CTX.lineWidth, fillStyle: CTX.fillStyle, strokeStyle: CTX.strokeStyle, mode: MODE }
             AUX.push(ACTUAL) }
@@ -228,6 +242,9 @@ document.addEventListener('keydown', e => {
 })
 
 
+
+
+
 //Function executed on DOMContentLoaded
 function init() {
 
@@ -240,6 +257,8 @@ function init() {
     CANVAS.height = window.innerHeight * 0.7;
     BACKGROUND_CANVAS.width = CANVAS.width;
     BACKGROUND_CANVAS.height = CANVAS.height;
+    
+   
 
 
     for (let i = 0; i < colors.length; i++) {
@@ -257,6 +276,7 @@ function init() {
         colorsContainer.appendChild(color)
     }
 
+   
 }
 
 
@@ -276,10 +296,17 @@ function startPath(e) {
             AUX.push(ACTUAL)
             break;
 
+            case 'arrow':
+                SNAPSHOT = CTX.getImageData(0, 0, CANVAS.width, CANVAS.height);
+                prevX = e.offsetX;
+                prevY = e.offsetY;
+                break;
+
         case 'circle':
         case 'square':
         case 'triangle':
         case 'star':
+        case 'heart':
             if (MODE == "stroke" || MODE == "fill") { SNAPSHOT = CTX.getImageData(0, 0, CANVAS.width, CANVAS.height); }
             prevX = e.offsetX;
             prevY = e.offsetY;
@@ -332,7 +359,11 @@ function draw(e) {
             if (MODE == "fill-shape") { AUX.push(ACTUAL) }
             break;
 
-
+        case 'arrow':
+            ACTUAL={ prevX: prevX, prevY: prevY, offsetX: e.offsetX, offsetY: e.offsetY, type: METHOD, width: CTX.lineWidth, fillStyle: CTX.fillStyle, strokeStyle: CTX.strokeStyle, mode:'fill' }
+            CTX.putImageData(SNAPSHOT, 0, 0); 
+            drawArrow(CTX, ACTUAL)
+            break;
 
         case 'star':
             if (MODE == "stroke" || MODE == "fill") { CTX.putImageData(SNAPSHOT, 0, 0); }
@@ -348,6 +379,15 @@ function draw(e) {
             AUX.push(ACTUAL)
             CTX.strokeStyle = lastContext.strokeStyle;
             CTX.fillStyle = lastContext.fillStyle;
+            break;
+
+        case 'heart':
+
+            if (MODE == "stroke" || MODE == "fill") { CTX.putImageData(SNAPSHOT, 0, 0); }
+            RADIUS = Math.sqrt(Math.pow((prevX - e.offsetX), 2) + Math.pow((prevY - e.offsetY), 2));
+            ACTUAL={prevX: prevX, prevY: prevY, radius: RADIUS, offsetX: e.offsetX, offsetY: e.offsetY, type: METHOD, width: CTX.lineWidth, fillStyle: CTX.fillStyle, strokeStyle: CTX.strokeStyle, mode: MODE }
+            drawHeart(CTX, ACTUAL)
+            if (MODE == "fill-shape") { AUX.push(ACTUAL) }
             break;
 
     }
@@ -403,6 +443,15 @@ function undo() {
                 case 'star':
                     drawStar(CTX,actualCommand);
                     break;
+
+                case 'heart':
+                    drawHeart(CTX,actualCommand);
+                    break;
+                
+                case 'arrow':
+                    drawArrow(CTX,actualCommand);
+                    break;
+
             }
         }
     }
@@ -454,7 +503,14 @@ function redo() {
                 case 'star':
                     drawStar(CTX,actualCommand);
                     break;
+            
+             case 'heart':
+                    drawHeart(CTX,actualCommand);
+                    break;
 
+            case 'arrow':
+                    drawArrow(CTX,actualCommand);
+                    break;
 
         }
 
@@ -474,10 +530,16 @@ function reDraw(CTX) {
         for (let j = 0; j < COMMANDS[i].length; j++) {
             actualCommand = COMMANDS[i][j]
 
+            console.log(actualCommand)
             switch (actualCommand.type) {
                 case 'first':
                     drawBrushEraser(CTX,actualCommand,true,false)
                     break;
+
+                    case 'heart':
+
+                        drawHeart(CTX,actualCommand);
+                        break;
 
                     case 'triangle':
                     
@@ -510,9 +572,16 @@ function reDraw(CTX) {
                     drawStar(CTX,actualCommand);
                     break;
 
+                 case 'arrow':
+                    drawArrow(CTX,actualCommand);
+                    break;
+
+                
+
             }
         }
     }
+
 
 }
 
@@ -621,6 +690,7 @@ function drawBrushEraser(CTX,actual,isFirst,isEraser){
         CTX.moveTo(actual.x, actual.y)
         
     } else{
+    
         CTX.lineJoin = "round";
         CTX.lineCap = "round";
         CTX.lineWidth = actual.width;
@@ -660,3 +730,86 @@ function drawSquare(CTX,actual){
     CTX.rect(actual.prevX, actual.prevY, actual.prevX - actual.offsetX, actual.prevY - actual.offsetY);
     if (actual.mode == "fill") { CTX.fill() } else { CTX.stroke() }
 }
+
+function drawArrow(ctx, actual) {
+
+    let hlen=5;
+    let fromx= actual.prevX;
+    let fromy= actual.prevY;
+    let tox = actual.offsetX;
+    let toy = actual.offsetY;
+
+    let dx = tox - fromx;
+    let dy = toy - fromy;
+    let angle = Math.atan2(dy, dx);
+    
+
+    ctx.beginPath();
+    ctx.lineCap = "round";
+    ctx.lineWidth = actual.width;
+    ctx.strokeStyle = actual.strokeStyle;
+    ctx.fillStyle = actual.fillStyle;
+    ctx.moveTo(fromx, fromy);
+    ctx.lineTo(tox, toy);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(tox, toy);
+    ctx.lineTo(tox - hlen * Math.cos(angle - Math.PI / 6), toy - hlen * Math.sin(angle - Math.PI / 6));
+    ctx.lineTo(tox - hlen * Math.cos(angle)/2, toy - hlen * Math.sin(angle)/2);
+    ctx.lineTo(tox - hlen * Math.cos(angle + Math.PI / 6), toy - hlen * Math.sin(angle + Math.PI / 6));
+    ctx.closePath();
+    ctx.stroke();
+    ctx.fill();
+  }
+  
+
+  function drawHeart(ctx,actual) {
+
+    
+    let x = actual.prevX;
+    let y = actual.prevY;
+    let width = actual.radius;
+    let height = actual.radius;
+  
+    
+    ctx.beginPath();
+    ctx.lineWidth = actual.width;
+    ctx.strokeStyle = actual.strokeStyle;
+    ctx.fillStyle = actual.fillStyle;
+
+    let topCurveHeight = height * 0.3;
+    ctx.moveTo(x, y + topCurveHeight);
+    // top left curve
+    ctx.bezierCurveTo(
+      x, y, 
+      x - width / 2, y, 
+      x - width / 2, y + topCurveHeight
+    );
+  
+    // bottom left curve
+    ctx.bezierCurveTo(
+      x - width / 2, y + (height + topCurveHeight) / 2, 
+      x, y + (height + topCurveHeight) / 2, 
+      x, y + height
+    );
+  
+    // bottom right curve
+    ctx.bezierCurveTo(
+      x, y + (height + topCurveHeight) / 2, 
+      x + width / 2, y + (height + topCurveHeight) / 2, 
+      x + width / 2, y + topCurveHeight
+    );
+  
+    // top right curve
+    ctx.bezierCurveTo(
+      x + width / 2, y, 
+      x, y, 
+      x, y + topCurveHeight
+    );
+  
+    ctx.closePath();
+    if (actual.mode == "fill") { ctx.fill() } else { ctx.stroke() }
+
+    }
+
+   
