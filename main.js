@@ -267,6 +267,26 @@ for (let i = 0;i<shapeButtonsContainer.length; i++){
     })
 }  
 
+let colorButtonsContainer = document.getElementById('colors-container');
+colorButtonsContainer.addEventListener('click', e => {
+    if(colorsContainer.classList.contains('visible')){
+        colorsContainer.classList.add('hidden')
+        colorsContainer.classList.remove('visible')
+    }else{
+        colorsContainer.classList.add('visible')
+        colorsContainer.classList.remove('hidden')
+
+    }
+
+})
+
+
+
+
+
+
+
+
 
 //Function executed on DOMContentLoaded
 function init() {
@@ -317,6 +337,7 @@ function startPath(e) {
             ACTUAL = { x: e.offsetX, y: e.offsetY, width: CTX.lineWidth / 2, strokeStyle: CTX.strokeStyle, fillStyle: CTX.fillStyle, type: 'first' }
             drawBrushEraser(CTX, ACTUAL, true, false)
             AUX.push(ACTUAL)
+            
             break;
 
         case 'arrow':
