@@ -30,34 +30,33 @@
     margin:15px;
     display: grid;
     gap:0.5rem;
-    grid-template-columns: 1fr 1fr 1fr 1fr;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
 }
 
 .navbar{
-    width: 100%;
+    
     background-color: gray;
     margin-top: 0px;
     margin-bottom: 15px;
+    width: auto;
 }
 
 .active{
     border: 5px solid violet;
 }
 
-html, body {
-    max-width: 100%;
-    overflow-y: hidden;
-    
+body,html{
+  max-width: 100%;
+  overflow-y: hidden;
 
-  }
-  
+}
 
 .button-18 {
   align-items: center;
-  background-color: #0A66C2;
+  background-color: transparent;
   border: 0;
   border-radius: 100px;
-  color: #ffffff;
+  color: black;
   cursor: pointer;
   display: inline-flex;
   font-family: -apple-system, system-ui, system-ui, "Segoe UI", Roboto, "Helvetica Neue", "Fira Sans", Ubuntu, Oxygen, "Oxygen Sans", Cantarell, "Droid Sans", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Lucida Grande", Helvetica, Arial, sans-serif;
@@ -66,9 +65,10 @@ html, body {
   justify-content: center;
   line-height: 10px;
   max-width: 480px;
-  height: 200px;
+  height: 100px;
   min-width: 70px;
   overflow: hidden;
+  border: 5px solid black;
   padding: 0px;
   padding-left: 20px;
   padding-right: 20px;
@@ -80,15 +80,9 @@ html, body {
   vertical-align: middle;
 }
 
-.button-18:hover,
-.button-18:focus { 
-  background-color: #16437E;
-  color: #ffffff;
-}
 
 .button-18:active {
-  background: #09223b;
-  color: rgb(255, 255, 255, .7);
+  background: transparent;
 }
 
 .button-18:disabled { 
@@ -100,7 +94,32 @@ html, body {
 button{margin:5px}
 
 #background, #myCanvas{
-  top: 240px;
+  top: 200px;
   left: 20px;
   position: absolute;
+}
+
+.button-18:hover{ 
+  background-color: #16437E;
+  color: #ffffff;
+}
+
+
+.activeTool{
+  filter: invert(24%) sepia(97%) saturate(1991%) hue-rotate(197deg) brightness(91%) contrast(92%);
+}
+
+.activeTool:hover{
+  filter: none;
+  
+}
+.shape{
+  width: 50px;
+  height: 50px;
+  
+}
+
+.button-18:hover .activeTool:hover{
+  filter:invert(100%) sepia(100%) saturate(0%) hue-rotate(148deg) brightness(105%) contrast(101%);
+  
 }
