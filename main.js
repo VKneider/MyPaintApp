@@ -751,7 +751,7 @@ function drawSquare(CTX, actual) {
     CTX.lineWidth = actual.width;
     CTX.strokeStyle = actual.strokeStyle;
     CTX.fillStyle = actual.fillStyle;
-    CTX.rect(actual.prevX, actual.prevY, actual.prevX - actual.offsetX, actual.prevY - actual.offsetY);
+    CTX.rect(actual.prevX, actual.prevY, (actual.prevX - actual.offsetX)*2, (actual.prevY - actual.offsetY)*2);
     if (actual.mode == "fill") { CTX.fill() } else { CTX.stroke() }
 }
 
