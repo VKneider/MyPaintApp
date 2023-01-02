@@ -1,54 +1,75 @@
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
-.flex{
-    display: flex;
+.flex {
+  display: flex;
 }
 
-.circle{
-    border-radius: 50%;
-    width: 50px;
-    height: 50px;
-    border: 5px solid black;
-
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.5rem;
+  overflow: auto;
+  white-space: nowrap;
 }
 
-.center{
-    text-align: center;
+.circle {
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  border: 5px solid black;
 }
 
-#myCanvas{
-
-    border: 5px solid black;
+.center {
+  text-align: center;
 }
 
-.grid-colores{
-    
-    margin:15px;
-    display: grid;
-    gap:0.5rem;
-    grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
+#myCanvas {
+  border: 5px solid black;
 }
 
-.navbar{
-    
-    background-color: gray;
-    margin-top: 0px;
-    margin-bottom: 15px;
-    width: auto;
+.grid-colores {
+  margin: 15px;
+  display: grid;
+  gap: 0.5rem;
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
 }
 
-.active{
-    border: 5px solid violet;
+input[type="color"] {
+  cursor: pointer;
+  appearance: auto;
+  border-radius: 50px;
+  width: 50px;
+  height: 27px;
+  cursor: default;
+  box-sizing: border-box;
+  background-color: buttonface;
+  color: buttontext;
+  border-width: 1px;
+  border-style: solid;
+  border-color: buttonborder;
+  border-image: initial;
+  padding: 1px 2px;
 }
 
-body,html{
+.navbar {
+  background-color: gray;
+  margin-top: 0px;
+  margin-bottom: 150px;
+  height: auto;
+}
+
+.active {
+  border: 5px solid violet;
+}
+
+body,
+html {
   max-width: 100%;
   overflow-y: hidden;
-
 }
 
 .button-18 {
@@ -59,7 +80,10 @@ body,html{
   color: black;
   cursor: pointer;
   display: inline-flex;
-  font-family: -apple-system, system-ui, system-ui, "Segoe UI", Roboto, "Helvetica Neue", "Fira Sans", Ubuntu, Oxygen, "Oxygen Sans", Cantarell, "Droid Sans", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Lucida Grande", Helvetica, Arial, sans-serif;
+  font-family: -apple-system, system-ui, system-ui, "Segoe UI", Roboto,
+    "Helvetica Neue", "Fira Sans", Ubuntu, Oxygen, "Oxygen Sans", Cantarell,
+    "Droid Sans", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol",
+    "Lucida Grande", Helvetica, Arial, sans-serif;
   font-size: 16px;
   font-weight: 600;
   justify-content: center;
@@ -74,56 +98,58 @@ body,html{
   padding-right: 20px;
   text-align: center;
   touch-action: manipulation;
-  transition: background-color 0.167s cubic-bezier(0.4, 0, 0.2, 1) 0s, box-shadow 0.167s cubic-bezier(0.4, 0, 0.2, 1) 0s, color 0.167s cubic-bezier(0.4, 0, 0.2, 1) 0s;
+  transition: background-color 0.167s cubic-bezier(0.4, 0, 0.2, 1) 0s,
+    box-shadow 0.167s cubic-bezier(0.4, 0, 0.2, 1) 0s,
+    color 0.167s cubic-bezier(0.4, 0, 0.2, 1) 0s;
   user-select: none;
   -webkit-user-select: none;
   vertical-align: middle;
 }
 
-
 .button-18:active {
   background: transparent;
 }
 
-.button-18:disabled { 
+.button-18:disabled {
   cursor: not-allowed;
-  background: rgba(0, 0, 0, .08);
-  color: rgba(0, 0, 0, .3);
+  background: rgba(0, 0, 0, 0.08);
+  color: rgba(0, 0, 0, 0.3);
 }
 
-button{margin:5px}
+button {
+  margin: 5px;
+}
 
-#background, #myCanvas{
-  top: 200px;
+#background,
+#myCanvas {
+  top: 20vh;
   left: 20px;
   position: absolute;
 }
 
-.button-18:hover{ 
-  background-color: #16437E;
+.button-18:hover {
+  background-color: #16437e;
   color: #ffffff;
 }
 
-
-.activeTool{
-  filter: invert(24%) sepia(97%) saturate(1991%) hue-rotate(197deg) brightness(91%) contrast(92%);
+.activeTool {
+  filter: invert(24%) sepia(97%) saturate(1991%) hue-rotate(197deg)
+    brightness(91%) contrast(92%);
 }
 
-.activeTool:hover{
+.activeTool:hover {
   filter: none;
-  
 }
-.shape{
+.shape {
   width: 50px;
   height: 50px;
-  
 }
 
-.button-18:hover .activeTool:hover{
-  filter:invert(100%) sepia(100%) saturate(0%) hue-rotate(148deg) brightness(105%) contrast(101%);
-  
+.button-18:hover .activeTool:hover {
+  filter: invert(100%) sepia(100%) saturate(0%) hue-rotate(148deg)
+    brightness(105%) contrast(101%);
 }
 
-.hidden{
+.hidden {
   display: none;
 }

@@ -10,17 +10,26 @@
   </head>
   <body>
     <header>
-      <nav class="flex navbar">
-        <div id="colors-container">
-          <img class="shape" src="./icons/palette.png" alt="Colors Button" />
-        </div>
+      <nav class="navbar flex">
+        <div id="interface" class="menu grid">
+          <div id="colors-container">
+            <img class="shape" src="./icons/palette.png" alt="Colors Button" />
+          </div>
 
+          <div id="tools-container">
+            <img class="shape" src="./icons/tools2.png" alt="" />
+          </div>
+
+          <div id="shapes-container">
+            <img class="shape" src="./icons/shapes.png" alt="" />
+          </div>
+
+          <div id="options-container">
+            <img class="shape" src="./icons/options.png" alt="" />
+          </div>
+        </div>
         <div id="colors" class="grid-colores hidden">
           <input type="color" id="custom-color" />
-        </div>
-
-        <div id="tools-container">
-          <img class="shape" src="./icons/tools2.png" alt="" />
         </div>
         <div class="tools flex hidden" id="tools">
           <button id="undo-btn" onclick="undo()" class="button-18">
@@ -62,9 +71,6 @@
           </button>
         </div>
 
-        <div id="shapes-container">
-          <img class="shape" src="./icons/shapes.png" alt="" />
-        </div>
         <div class="figures flex hidden" id="figures">
           <button id="square-btn" class="button-18 btn">
             <img
@@ -111,9 +117,6 @@
           </button>
         </div>
 
-        <div id="options-container">
-          <img class="shape" src="./icons/options.png" alt="" />
-        </div>
         <div class="options flex hidden" id="options">
           <button id="change-background-btn" class="button-18 btn">
             Change Background
@@ -126,7 +129,7 @@
       </nav>
     </header>
 
-    <div class="center">
+    <div class="center flex">
       <canvas id="background"></canvas>
       <canvas id="myCanvas"></canvas>
     </div>
