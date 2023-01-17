@@ -1,3 +1,41 @@
+main {
+  height: 100vh;
+}
+
+.sidebar {
+  width: 0px;
+  height: 100vh;
+  background-color: rgb(201, 38, 38);
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 2;
+  position: fixed;
+}
+
+.button {
+  width: 35px;
+  height: 35px;
+  margin: 8px;
+  border: 2px solid black;
+  border-radius: 20px;
+  cursor: pointer;
+}
+
+.sidebar-item {
+  text-decoration: none;
+  color: black;
+  display: flex;
+  padding: 1em;
+  align-items: center;
+  cursor: pointer;
+}
+
+.drawboard {
+  flex: 1;
+  overflow: hidden;
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -10,9 +48,8 @@
 
 .grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(5, 1fr);
   gap: 0.5rem;
-  overflow: auto;
   white-space: nowrap;
 }
 
@@ -20,6 +57,9 @@
   border-radius: 50%;
   width: 50px;
   height: 50px;
+}
+
+.selected-circle {
   border: 5px solid black;
 }
 
@@ -28,7 +68,7 @@
 }
 
 #myCanvas {
-  border: 5px solid black;
+  border: 3px solid black;
 }
 
 .grid-colores {
@@ -124,7 +164,7 @@ button {
 #myCanvas {
   top: 20vh;
   left: 20px;
-  position: absolute;
+  position: fixed;
 }
 
 .button-18:hover {
@@ -143,6 +183,7 @@ button {
 .shape {
   width: 50px;
   height: 50px;
+  border: 2px;
 }
 
 .button-18:hover .activeTool:hover {
