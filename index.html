@@ -1,138 +1,93 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>My Paint App</title>
-    <link rel="stylesheet" href="style.css" />
-    <link rel="icon" href="./art.png" />
-  </head>
-  <body>
-    <header>
-      <nav class="navbar flex">
-        <div id="interface" class="menu grid">
-          <div id="colors-container">
-            <img class="shape" src="./icons/palette.png" alt="Colors Button" />
-          </div>
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>My Paint App</title>
+        <link rel="stylesheet" href="style.css" />
+        <link rel="icon" href="./art.png" />
+    </head>
 
-          <div id="tools-container">
-            <img class="shape" src="./icons/tools2.png" alt="" />
-          </div>
+    <body>
+        <header>
+            <nav class="navbar flex">
+                <div id="interface" class="menu grid">
+                    <div id="colors-container">
+                        <img class="shape" src="./icons/palette.png" alt="Colors Button" />
+                    </div>
 
-          <div id="shapes-container">
-            <img class="shape" src="./icons/shapes.png" alt="" />
-          </div>
+                    <div id="tools-container">
+                        <img class="shape" src="./icons/tools2.png" alt="" />
+                    </div>
 
-          <div id="options-container">
-            <img class="shape" src="./icons/options.png" alt="" />
-          </div>
+                    <div id="shapes-container">
+                        <img class="shape" src="./icons/shapes.png" alt="" />
+                    </div>
+
+                    <div id="options-container">
+                        <img class="shape" src="./icons/options.png" alt="" />
+                    </div>
+                </div>
+                <div id="colors" class="grid-colores hidden">
+                    <input type="color" id="custom-color" />
+                </div>
+                <div class="tools flex hidden" id="tools">
+                    <button id="undo-btn" onclick="undo()" class="button-18">
+                        <img src="./icons/undo-circular-arrow.png" class="shape" alt="Undo Draw Button" />
+                    </button>
+                    <button id="redo-btn" onclick="redo()" class="button-18">
+                        <img src="./icons/redo-arrow-symbol.png" class="shape" alt="Redo Draw Button" />
+                    </button>
+                    <button id="brush-btn" class="button-18 btn">
+                        <img src="./icons/paintbrush.png" class="shape" alt="Brush Shape Tool" />
+                    </button>
+                    <button id="eraser-btn" class="button-18 btn">
+                        <img src="./icons/eraser.png" class="shape" alt="Square Shape Tool" />
+                    </button>
+                    <button id="moreWidth" class="button-18">+</button>
+                    <button id="lessWidth" class="button-18">-</button>
+                    <button id="clearCanvas-btn" class="button-18">
+                        <img src="./icons/delete.png" class="shape" alt="Square Shape Tool" />
+                    </button>
+                </div>
+
+                <div class="figures flex hidden" id="figures">
+                    <button id="square-btn" class="button-18 btn">
+                        <img src="./icons/square.png" class="shape" alt="Square Shape Tool" />
+                    </button>
+                    <button id="triangle-btn" class="button-18 btn">
+                        <img src="./icons/triangle.png" class="shape" alt="Triangle Shape Tool" />
+                    </button>
+                    <button id="circle-btn" class="button-18 btn">
+                        <img src="./icons/circle.png" class="shape" alt="Circle Shape Tool" />
+                    </button>
+                    <button id="star-btn" class="button-18 btn">
+                        <img src="./icons/star.png" class="shape" alt="Star Shape Tool" />
+                    </button>
+                    <button id="heart-btn" class="button-18 btn">
+                        <img src="./icons/heart.png" class="shape" alt="Heart Shape Tool" />
+                    </button>
+                    <button id="arrow-btn" class="button-18 btn">
+                        <img src="./icons/right-arrow.png" class="shape" alt="Arrow Shape Tool" />
+                    </button>
+                    <button id="fill-color-btn" class="button-18 btn-opt">Fill Color</button>
+                    <button id="stroke-shape-btn" class="button-18 btn-opt">Stroke</button>
+                    <button id="fill-shape-btn" class="button-18 btn-opt">Fill Shape</button>
+                </div>
+
+                <div class="options flex hidden" id="options">
+                    <button id="change-background-btn" class="button-18 btn">Change Background</button>
+                    <button id="download-btn" class="button-18 btn">Download Image</button>
+                    <input type="color" id="background-color" />
+                </div>
+            </nav>
+        </header>
+
+        <div class="center flex">
+            <canvas id="background"></canvas>
+            <canvas id="myCanvas"></canvas>
         </div>
-        <div id="colors" class="grid-colores hidden">
-          <input type="color" id="custom-color" />
-        </div>
-        <div class="tools flex hidden" id="tools">
-          <button id="undo-btn" onclick="undo()" class="button-18">
-            <img
-              src="./icons/undo-circular-arrow.png"
-              class="shape"
-              alt="Undo Draw Button"
-            />
-          </button>
-          <button id="redo-btn" onclick="redo()" class="button-18">
-            <img
-              src="./icons/redo-arrow-symbol.png"
-              class="shape"
-              alt="Redo Draw Button"
-            />
-          </button>
-          <button id="brush-btn" class="button-18 btn">
-            <img
-              src="./icons/paintbrush.png"
-              class="shape"
-              alt="Brush Shape Tool"
-            />
-          </button>
-          <button id="eraser-btn" class="button-18 btn">
-            <img
-              src="./icons/eraser.png"
-              class="shape"
-              alt="Square Shape Tool"
-            />
-          </button>
-          <button id="moreWidth" class="button-18">+</button>
-          <button id="lessWidth" class="button-18">-</button>
-          <button id="clearCanvas-btn" class="button-18">
-            <img
-              src="./icons/delete.png"
-              class="shape"
-              alt="Square Shape Tool"
-            />
-          </button>
-        </div>
-
-        <div class="figures flex hidden" id="figures">
-          <button id="square-btn" class="button-18 btn">
-            <img
-              src="./icons/square.png"
-              class="shape"
-              alt="Square Shape Tool"
-            />
-          </button>
-          <button id="triangle-btn" class="button-18 btn">
-            <img
-              src="./icons/triangle.png"
-              class="shape"
-              alt="Triangle Shape Tool"
-            />
-          </button>
-          <button id="circle-btn" class="button-18 btn">
-            <img
-              src="./icons/circle.png"
-              class="shape"
-              alt="Circle Shape Tool"
-            />
-          </button>
-          <button id="star-btn" class="button-18 btn">
-            <img src="./icons/star.png" class="shape" alt="Star Shape Tool" />
-          </button>
-          <button id="heart-btn" class="button-18 btn">
-            <img src="./icons/heart.png" class="shape" alt="Heart Shape Tool" />
-          </button>
-          <button id="arrow-btn" class="button-18 btn">
-            <img
-              src="./icons/right-arrow.png"
-              class="shape"
-              alt="Arrow Shape Tool"
-            />
-          </button>
-          <button id="fill-color-btn" class="button-18 btn-opt">
-            Fill Color
-          </button>
-          <button id="stroke-shape-btn" class="button-18 btn-opt">
-            Stroke
-          </button>
-          <button id="fill-shape-btn" class="button-18 btn-opt">
-            Fill Shape
-          </button>
-        </div>
-
-        <div class="options flex hidden" id="options">
-          <button id="change-background-btn" class="button-18 btn">
-            Change Background
-          </button>
-          <button id="download-btn" class="button-18 btn">
-            Download Image
-          </button>
-          <input type="color" id="background-color" />
-        </div>
-      </nav>
-    </header>
-
-    <div class="center flex">
-      <canvas id="background"></canvas>
-      <canvas id="myCanvas"></canvas>
-    </div>
-    <script src="main.js"></script>
-  </body>
+        <script src="main.js"></script>
+    </body>
 </html>
