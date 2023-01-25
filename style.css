@@ -1,3 +1,11 @@
+*{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  user-select: none;
+  text-align: center;
+}
+
 main {
   height: 100vh;
 }
@@ -13,12 +21,12 @@ main {
   position: fixed;
 }
 
-.button {
-  width: 35px;
-  height: 35px;
-  margin: 8px;
-  border: 2px solid black;
-  border-radius: 20px;
+button {
+  width: 50px;
+  height: 50px;
+  border: 2px solid #00000050;
+  background-color: transparent;
+  border-radius: 360px;
   cursor: pointer;
 }
 
@@ -36,12 +44,6 @@ main {
   overflow: hidden;
 }
 
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
 .flex {
   display: flex;
 }
@@ -53,69 +55,71 @@ main {
   white-space: nowrap;
 }
 
-.circle {
-  border-radius: 50%;
-  width: 50px;
-  height: 50px;
-}
-
-.selected-circle {
-  border: 5px solid black;
-}
-
 .center {
   text-align: center;
 }
 
 #myCanvas {
-  border: 3px solid black;
+  border: 1px solid #00000050;
+  box-shadow: 0px 0px 100px 0px #00000050;
 }
 
 .grid-colores {
-  margin: 15px;
   display: grid;
   gap: 0.5rem;
   grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
+  margin-right: 40px;
+}
+
+.backGray{
+  background-color: gray;
+}
+
+.interface{
+  background-color: gray;
 }
 
 input[type="color"] {
+  opacity: 0;
+  position: absolute;
   cursor: pointer;
   appearance: auto;
-  border-radius: 50px;
+  border-radius: 360px;
   width: 50px;
-  height: 27px;
-  cursor: default;
-  box-sizing: border-box;
+  height: 50px;
+  transform: translate(-25%, -25%);
   background-color: buttonface;
   color: buttontext;
-  border-width: 1px;
-  border-style: solid;
-  border-color: buttonborder;
-  border-image: initial;
   padding: 1px 2px;
 }
 
-.navbar {
+ header{
   background-color: gray;
+ }
+
+ .grid-tools{
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 0.2rem;
+  white-space: nowrap;
+  margin: 0px 010px 0px 10px;
+ }
+
+.navbar {
   margin-top: 0px;
   margin-bottom: 150px;
   height: auto;
+  background-color: gray;
+
 }
 
 .active {
   border: 5px solid violet;
 }
 
-body,
-html {
-  max-width: 100%;
-  overflow-y: hidden;
-}
-
 .button-18 {
   align-items: center;
   background-color: transparent;
-  border: 0;
   border-radius: 100px;
   color: black;
   cursor: pointer;
@@ -127,17 +131,10 @@ html {
   font-size: 16px;
   font-weight: 600;
   justify-content: center;
-  line-height: 10px;
-  max-width: 480px;
-  height: 100px;
-  min-width: 70px;
+  line-height: 15px;
   overflow: hidden;
-  border: 5px solid black;
   padding: 0px;
-  padding-left: 20px;
-  padding-right: 20px;
   text-align: center;
-  touch-action: manipulation;
   transition: background-color 0.167s cubic-bezier(0.4, 0, 0.2, 1) 0s,
     box-shadow 0.167s cubic-bezier(0.4, 0, 0.2, 1) 0s,
     color 0.167s cubic-bezier(0.4, 0, 0.2, 1) 0s;
@@ -167,8 +164,9 @@ button {
   position: fixed;
 }
 
-.button-18:hover {
+button:hover {
   background-color: #16437e;
+  border-color: #ffffff;
   color: #ffffff;
 }
 
@@ -181,8 +179,8 @@ button {
   filter: none;
 }
 .shape {
-  width: 50px;
-  height: 50px;
+  width: 25px;
+  height: 25px;
   border: 2px;
 }
 
@@ -194,3 +192,23 @@ button {
 .hidden {
   display: none;
 }
+
+.material-symbols-outlined {
+  background-color: transparent;
+  border-radius: 360px;
+  cursor: pointer;
+}
+
+.navbar::-webkit-scrollbar {
+	height: 7px;
+}
+
+.navbar::-webkit-scrollbar-thumb {
+	background: #ccc;
+	border-radius: 5px;
+}
+
+body,html{
+  overflow-y: hidden;
+}
+

@@ -78,11 +78,13 @@ changeBackground.addEventListener("click", () => {
 });
 
 moreWidth.addEventListener("click", () => {
-    CTX.lineWidth += 10;
+    CTX.lineWidth += 5;
 });
 lessWidth.addEventListener("click", () => {
-    CTX.lineWidth -= 10;
+    CTX.lineWidth -= 5;
 });
+
+
 
 clearCanvasBtn.addEventListener("click", () => {
     CTX.clearRect(0, 0, CANVAS.width, CANVAS.height);
@@ -294,12 +296,12 @@ document.addEventListener("keydown", e => {
     if (DRAWING) return;
     switch (e.key) {
         case "+":
-            CTX.lineWidth += 10;
+            CTX.lineWidth += 5;
             lastContext.lineWidth = CTX.lineWidth;
             break;
 
         case "-":
-            CTX.lineWidth -= 10;
+            CTX.lineWidth -= 5;
             lastContext.lineWidth = CTX.lineWidth;
             break;
 
@@ -310,7 +312,7 @@ document.addEventListener("keydown", e => {
 
         case "r":
         case "R":
-            console.log(COMMANDS);
+            console.log(CTX.lineWidth);
             break;
 
         case "ctrl":

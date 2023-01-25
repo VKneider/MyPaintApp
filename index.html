@@ -7,6 +7,7 @@
         <title>My Paint App</title>
         <link rel="stylesheet" href="style.css" />
         <link rel="icon" href="./art.png" />
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
     </head>
 
     <body>
@@ -14,45 +15,39 @@
             <nav class="navbar flex">
                 <div id="interface" class="menu grid">
                     <div id="colors-container">
-                        <img class="shape" src="./icons/palette.png" alt="Colors Button" />
+                        <button class="material-symbols-outlined" alt="Colors Button">Palette</button>
                     </div>
 
                     <div id="tools-container">
-                        <img class="shape" src="./icons/tools2.png" alt="" />
+                        <button class="material-symbols-outlined" alt="">brush</button>
                     </div>
 
                     <div id="shapes-container">
-                        <img class="shape" src="./icons/shapes.png" alt="" />
+                        <button class="material-symbols-outlined" alt="">shapes</button>
                     </div>
 
                     <div id="options-container">
-                        <img class="shape" src="./icons/options.png" alt="" />
+                        <button class="material-symbols-outlined" alt="">settings</button>
                     </div>
                 </div>
-                <div id="colors" class="grid-colores hidden">
-                    <input type="color" id="custom-color" />
+                <div id="colors" class="grid-colores hidden backGray">
+                    <button class="material-symbols-outlined"><input type="color" id="custom-color" />Colorize</button>
                 </div>
-                <div class="tools flex hidden" id="tools">
-                    <button id="undo-btn" onclick="undo()" class="button-18">
-                        <img src="./icons/undo-circular-arrow.png" class="shape" alt="Undo Draw Button" />
-                    </button>
-                    <button id="redo-btn" onclick="redo()" class="button-18">
-                        <img src="./icons/redo-arrow-symbol.png" class="shape" alt="Redo Draw Button" />
-                    </button>
-                    <button id="brush-btn" class="button-18 btn">
-                        <img src="./icons/paintbrush.png" class="shape" alt="Brush Shape Tool" />
-                    </button>
-                    <button id="eraser-btn" class="button-18 btn">
-                        <img src="./icons/eraser.png" class="shape" alt="Square Shape Tool" />
-                    </button>
-                    <button id="moreWidth" class="button-18">+</button>
-                    <button id="lessWidth" class="button-18">-</button>
-                    <button id="clearCanvas-btn" class="button-18">
-                        <img src="./icons/delete.png" class="shape" alt="Square Shape Tool" />
-                    </button>
+                <div class="tools grid-tools hidden backGray" id="tools">
+                    <button id="undo-btn" onclick="undo()" class="button-18 material-symbols-outlined" alt="Undo Draw Button">undo</button>
+                    
+                    <button id="redo-btn" onclick="redo()" class="button-18 material-symbols-outlined" alt="Redo Draw Button">redo</button>
+                    
+                    <button id="brush-btn" class="button-18 btn material-symbols-outlined" alt="Brush Shape Tool">format_paint</button>
+
+                    <button id="eraser-btn" class="button-18 btn material-symbols-outlined" alt="Square Shape Tool">auto_fix_normal</button>
+
+                    <button id="moreWidth" class="button-18 material-symbols-outlined">add</button>
+                    <button id="lessWidth" class="button-18 material-symbols-outlined">remove</button>
+                    <button id="clearCanvas-btn" class="button-18 material-symbols-outlined" alt="Square Shape Tool">delete</button>
                 </div>
 
-                <div class="figures flex hidden" id="figures">
+                <div class="figures grid-tools backGray hidden" id="figures">
                     <button id="square-btn" class="button-18 btn">
                         <img src="./icons/square.png" class="shape" alt="Square Shape Tool" />
                     </button>
@@ -71,15 +66,18 @@
                     <button id="arrow-btn" class="button-18 btn">
                         <img src="./icons/right-arrow.png" class="shape" alt="Arrow Shape Tool" />
                     </button>
-                    <button id="fill-color-btn" class="button-18 btn-opt">Fill Color</button>
-                    <button id="stroke-shape-btn" class="button-18 btn-opt">Stroke</button>
-                    <button id="fill-shape-btn" class="button-18 btn-opt">Fill Shape</button>
+
+                    <button id="fill-color-btn" class="button-18 btn-opt material-symbols-outlined">format_color_fill</button>
+
+                    <button id="stroke-shape-btn" class="button-18 btn-opt material-symbols-outlined">all_out</button>
+                    
+                    <button id="fill-shape-btn" class="button-18 btn-opt material-symbols-outlined">hotel_class</button>
                 </div>
 
-                <div class="options flex hidden" id="options">
-                    <button id="change-background-btn" class="button-18 btn">Change Background</button>
-                    <button id="download-btn" class="button-18 btn">Download Image</button>
-                    <input type="color" id="background-color" />
+                <div class="options flex hidden backGray" id="options">
+                    <button id="change-background-btn" class="button-18 btn material-symbols-outlined">background_replace</button>
+                    <button id="download-btn" class="button-18 btn material-symbols-outlined">download</button>
+                    <button class="material-symbols-outlined"><input type="color" id="background-color" />Colorize</button>
                 </div>
             </nav>
         </header>
