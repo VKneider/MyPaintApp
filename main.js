@@ -315,7 +315,6 @@ CANVAS.addEventListener("mouseleave", e => {
 
             case "polygon":
                 if (MODE != "fill-shape") {
-                    RADIUS = Math.sqrt(Math.pow(prevX - e.offsetX, 2) + Math.pow(prevY - e.offsetY, 2));
                     ACTUAL = {
                         prevX: prevX,
                         prevY: prevY,
