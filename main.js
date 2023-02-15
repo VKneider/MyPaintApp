@@ -16,6 +16,7 @@ let lastContext = {
 };
 let ACTUAL;
 let SPIKES = 5;
+let SIDES = 5;
 
 //Background Canvas
 let BACKGROUND_CANVAS = document.getElementById("background");
@@ -59,6 +60,7 @@ let downloadBtn = document.getElementById("download-btn");
 let activateStar = document.getElementById("star-btn");
 let activateHeart = document.getElementById("heart-btn");
 let activateArrow = document.getElementById("arrow-btn");
+let activatePolygon = document.getElementById("polygon-btn");
 
 backgroundInput.value = "#ffffff";
 colorInput.value = "#ffffff";
@@ -79,9 +81,11 @@ changeBackground.addEventListener("click", () => {
 
 moreWidth.addEventListener("click", () => {
     CTX.lineWidth += 5;
+    
 });
 lessWidth.addEventListener("click", () => {
     CTX.lineWidth -= 5;
+
 });
 
 
@@ -114,6 +118,10 @@ activateHeart.addEventListener("click", () => {
 });
 activateArrow.addEventListener("click", () => {
     METHOD = "arrow";
+});
+
+activatePolygon.addEventListener("click", () => {
+    METHOD = "polygon";
 });
 
 modeFill.addEventListener("click", () => {
@@ -211,7 +219,28 @@ CANVAS.addEventListener("mouseup", e => {
                 };
                 AUX.push(ACTUAL);
                 break;
+
             }
+
+        case "polygon":
+            if (MODE != "fill-shape") {
+                RADIUS = Math.sqrt(Math.pow(prevX - e.offsetX, 2) + Math.pow(prevY - e.offsetY, 2));
+                ACTUAL = {
+                    prevX: prevX,
+                    prevY: prevY,
+                    radius: RADIUS,
+                    offsetX: e.offsetX,
+                    offsetY: e.offsetY,
+                    type: METHOD,
+                    width: CTX.lineWidth,
+                    fillStyle: CTX.fillStyle,
+                    strokeStyle: CTX.strokeStyle,
+                    mode: MODE,
+                    sides:SIDES
+                };
+                AUX.push(ACTUAL);
+                break;
+    }
     }
 
     COMMANDS.push(AUX);
@@ -283,6 +312,26 @@ CANVAS.addEventListener("mouseleave", e => {
                 AUX.push(ACTUAL);
                 break;
             }
+
+            case "polygon":
+                if (MODE != "fill-shape") {
+                    RADIUS = Math.sqrt(Math.pow(prevX - e.offsetX, 2) + Math.pow(prevY - e.offsetY, 2));
+                    ACTUAL = {
+                        prevX: prevX,
+                        prevY: prevY,
+                        radius: RADIUS,
+                        offsetX: e.offsetX,
+                        offsetY: e.offsetY,
+                        type: METHOD,
+                        width: CTX.lineWidth,
+                        fillStyle: CTX.fillStyle,
+                        strokeStyle: CTX.strokeStyle,
+                        mode: MODE,
+                        sides:SIDES
+                    };
+                    AUX.push(ACTUAL);
+                    break;
+        }
     }
 
     COMMANDS.push(AUX);
@@ -329,10 +378,12 @@ document.addEventListener("keydown", e => {
 
         case "*":
             SPIKES++;
+            SIDES++;
             break;
 
         case "/":
             SPIKES--;
+            SIDES--;
             break;
     }
 });
@@ -468,6 +519,7 @@ function startPath(e) {
         case "triangle":
         case "star":
         case "heart":
+        case "polygon":
             if (MODE == "stroke" || MODE == "fill") {
                 SNAPSHOT = CTX.getImageData(0, 0, CANVAS.width, CANVAS.height);
             }
@@ -612,6 +664,30 @@ function draw(e) {
             }
             break;
 
+        case "polygon":
+            if (MODE == "stroke" || MODE == "fill") {
+                CTX.putImageData(SNAPSHOT, 0, 0);
+            }
+            RADIUS = Math.sqrt(Math.pow(prevX - e.offsetX, 2) + Math.pow(prevY - e.offsetY, 2));
+            ACTUAL = {
+                prevX: prevX,
+                prevY: prevY,
+                radius: RADIUS,
+                offsetX: e.offsetX,
+                offsetY: e.offsetY,
+                type: METHOD,
+                width: CTX.lineWidth,
+                fillStyle: CTX.fillStyle,
+                strokeStyle: CTX.strokeStyle,
+                mode: MODE,
+                sides:SIDES
+            };
+            drawPolygon(CTX, ACTUAL);
+            if (MODE == "fill-shape") {
+                AUX.push(ACTUAL);
+            }
+            break;
+
         case "eraser":
             ACTUAL = {
                 x: e.offsetX,
@@ -706,6 +782,10 @@ function undo() {
                 case "arrow":
                     drawArrow(CTX, actualCommand);
                     break;
+
+                case "polygon":
+                    drawPolygon(CTX, actualCommand);
+                    break;
             }
         }
     }
@@ -761,6 +841,10 @@ function redo() {
             case "arrow":
                 drawArrow(CTX, actualCommand);
                 break;
+            
+            case "polygon":
+                drawPolygon(CTX, actualCommand);
+                break;
         }
     }
     LAST = [];
@@ -815,6 +899,10 @@ function reDraw(CTX) {
 
                 case "arrow":
                     drawArrow(CTX, actualCommand);
+                    break;
+
+                case "polygon":
+                    drawPolygon(CTX, actualCommand);
                     break;
             }
         }
@@ -1038,6 +1126,7 @@ function drawHeart(ctx, actual) {
 
 //Javascript function to draw polygons on canvas given the number of sides
 function drawPolygon(ctx, actual) {
+    console.log(actual)
     let sides = actual.sides;
     let radius = actual.radius;
     let x = actual.prevX;
